@@ -1,9 +1,7 @@
-import LoginMenu from "@/components/auth/LoginMenu";
+import LoginMenu from "@/components/auth/login/LoginMenu";
 
 export default function LoginPage() {
     return (
-        <div>
             <LoginMenu></LoginMenu>
-        </div>
     );
 }

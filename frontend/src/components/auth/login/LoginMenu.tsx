@@ -1,11 +1,12 @@
 'use client';
 
-import { useState } from 'react';
+import {useState} from 'react';
 import Button from "@/components/ui/shared/Button";
-import SelectMethod from "@/components/auth/SelectMethod";
-import CheckedInput from "@/components/auth/CheckedInput";
+import SelectMethod from "@/components/auth/login/SelectMethod";
+import CheckedInput from "@/components/auth/login/CheckedInput";
 import {checkLogin, checkUserExists} from "@/lib/api/auth";
-import {validateEmail, validatePhone} from "@/utils/validation"; // Ваш API-метод
+import {validateEmail, validatePhone} from "@/utils/validation";
+import {useRouter} from "next/navigation"; // Ваш API-метод
 
 export default function LoginMenu() {
     const [loginMethod, setLoginMethod] = useState<'email' | 'phone'>('email');
@@ -16,6 +17,8 @@ export default function LoginMenu() {
     const [error, setError] = useState<string | null>(null);
     const [isLoading, setIsLoading] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
+    const router = useRouter();
+
     const handleCheckUser = async () => {
         if (loginMethod === 'email' && !validateEmail(loginValue)) {
             setError('Введите корректный email');
@@ -46,68 +49,85 @@ export default function LoginMenu() {
     };
 
     const handleLogin = async () => {
-        return checkLogin(loginMethod, loginValue, password);
+
+        setIsLoading(true);
+        setError(null);
+
+        try {
+            const userLogin = await checkLogin(loginMethod, loginValue, password);
+            if (userLogin) {
+               router.push('/');
+            } else {
+                setError('Пользователь не найден.');
+            }
+        } catch (e) {
+            console.error(e);
+            setError('Ошибка сервера.');
+        } finally {
+            setIsLoading(false);
+        }
     };
 
-    return (
-        <div>
-            <div className='bg-white rounded-3xl shadow-lg flex flex-col items-center justify-center p-8 w-full min-w-md max-w-md'>
-                <div className="text-center mb-6">
-                    <h1 className='font-bold text-3xl text-emerald-800 mb-2'>
-                        {step === 'auth' ? 'Вход' : 'Введите пароль'}
-                    </h1>
-                    <h3 className='text-gray-600'>
-                        {step === 'auth'
-                            ? 'Введите email или телефон'
-                            : `Пароль для ${loginValue}`
-                        }
-                    </h3>
-                </div>
+return (
+    <div>
+        <div
+            className='bg-white rounded-3xl shadow-lg flex flex-col items-center justify-center p-8 w-full min-w-md max-w-md'>
+            <div className="text-center mb-6">
+                <h1 className='font-bold text-3xl text-emerald-800 mb-2'>
+                    {step === 'auth' ? 'Вход' : 'Введите пароль'}
+                </h1>
+                <h3 className='text-gray-600'>
+                    {step === 'auth'
+                        ? 'Введите email или телефон'
+                        : `Пароль для ${loginValue}`
+                    }
+                </h3>
+            </div>
 
-                <div className='w-full h-8 flex justify-center items-center overflow-hidden'>
-                    {error && (
-                        <p className="text-red-500 text-sm mb-4">{error}</p>
-                    )}
-                </div>
+            <div className='w-full h-8 flex justify-center items-center overflow-hidden'>
+                {error && (
+                    <p className="text-red-500 text-sm mb-4">{error}</p>
+                )}
+            </div>
 
 
-                {step === 'auth' ? (
-                    <>
-                        <SelectMethod
-                            loginMethod={loginMethod}
-                            setLoginMethod={setLoginMethod}
-                        />
+            {step === 'auth' ? (
+                <>
+                    <SelectMethod
+                        loginMethod={loginMethod}
+                        setLoginMethod={setLoginMethod}
+                    />
 
-                        <div className="w-full space-y-4 mt-4">
-                            <div>
-                                <label htmlFor="login" className="block text-sm font-medium text-gray-700 mb-1">
-                                    {loginMethod === 'email' ? 'Email' : 'Телефон'}
-                                </label>
-                                <input
-                                    type={loginMethod === 'email' ? 'email' : 'tel'}
-                                    id="login"
-                                    value={loginValue}
-                                    onChange={(e) => setLoginValue(e.target.value)}
-                                    className='w-full px-4 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition'
-                                    placeholder={loginMethod === 'email' ? 'your@email.com' : '+7 (123) 456-78-90'}
-                                />
-                            </div>
-
-                            <CheckedInput
-                                rememberMe={rememberMe}
-                                setRememberMe={setRememberMe}
+                    <div className="w-full space-y-4 mt-4">
+                        <div>
+                            <label htmlFor="login" className="block text-sm font-medium text-gray-700 mb-1">
+                                {loginMethod === 'email' ? 'Email' : 'Телефон'}
+                            </label>
+                            <input
+                                type={loginMethod === 'email' ? 'email' : 'tel'}
+                                id="login"
+                                value={loginValue}
+                                onChange={(e) => setLoginValue(e.target.value)}
+                                className='w-full px-4 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition'
+                                placeholder={loginMethod === 'email' ? 'your@email.com' : '+7 (123) 456-78-90'}
                             />
                         </div>
 
-                        <Button
-                            onClick={handleCheckUser}
-                            disabled={isLoading}
-                        >
-                            {isLoading ? 'Проверка...' : 'Продолжить'}
-                        </Button>
-                    </>
-                ) : (
-                    <>
+                        <CheckedInput
+                            rememberMe={rememberMe}
+                            setRememberMe={setRememberMe}
+                        />
+                    </div>
+
+                    <Button
+                        onClick={handleCheckUser}
+                        disabled={isLoading}
+                    >
+                        {isLoading ? 'Проверка...' : 'Продолжить'}
+                    </Button>
+                </>
+            ) : (
+                <>
                     <div className="w-full space-y-4 mt-4">
                         <div className="relative">
                             <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
@@ -171,22 +191,22 @@ export default function LoginMenu() {
                             setRememberMe={setRememberMe}
                         />
                     </div>
-                        <Button
-                            onClick={handleLogin}
-                            disabled={isLoading}
-                        >
-                            {isLoading ? 'Вход...' : 'Войти'}
-                        </Button>
-                    </>
-                )}
+                    <Button
+                        onClick={handleLogin}
+                        disabled={isLoading}
+                    >
+                        {isLoading ? 'Вход...' : 'Войти'}
+                    </Button>
+                </>
+            )}
 
-                <div className="mt-4 text-sm text-gray-500">
-                    Нет аккаунта?{' '}
-                    <a href="/register/" className="text-emerald-600 hover:underline">
-                        Зарегистрироваться
-                    </a>
-                </div>
+            <div className="mt-4 text-sm text-gray-500">
+                Нет аккаунта?{' '}
+                <a href="/register/" className="text-emerald-600 hover:underline">
+                    Зарегистрироваться
+                </a>
             </div>
         </div>
-    );
+    </div>
+);
 }
