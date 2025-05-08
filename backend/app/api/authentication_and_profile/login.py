@@ -1,10 +1,14 @@
+import re
 from datetime import timedelta
+from typing import Literal
 
 from config import SUPABASE_URL, SUPABASE_KEY, SECRET_KEY, ALGORITHM, ACCESS_TOKEN_EXPIRE_MINUTES
 from fastapi import APIRouter, HTTPException
 from supabase import create_client
 from api.authentication_and_profile.models import LoginInput
 from api.utils.functions import normalize_phone_number, hash_password, create_access_token
+
+from backend.app.api.authentication_and_profile.models import LoginExists
 
 supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
 login_router = APIRouter()
@@ -40,3 +44,27 @@ def login(user: LoginInput):
     access_token = create_access_token(data=token_data, expires_delta=timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES))
 
     return {"access_token": access_token, "token_type": "bearer"}
+
+
+@login_router.post("/user/exists")
+def user_exists(
+        info: LoginExists
+) -> dict[str, bool]:
+    if info.value_type == 'email' and not re.match(r"[^@]+@[^@]+\.[^@]+", info.value):
+        raise HTTPException(
+            status_code=400,
+            detail="Invalid email format"
+        )
+    elif info.value_type == 'phone_number' and not info.value.isdigit():
+        raise HTTPException(
+            status_code=400,
+            detail="Phone number should contain only digits"
+        )
+    try:
+        result = supabase.table("users").select('id').eq(info.value_type, info.value).limit(1).execute().data
+        return {"exists": bool(result)}
+    except Exception as e:
+        raise HTTPException(
+            status_code=400,
+            detail="Could not check user existence"
+        )
