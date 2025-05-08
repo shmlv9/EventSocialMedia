@@ -10,7 +10,7 @@ supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
 login_router = APIRouter()
 
 
-@login_router.post("/auth/login")
+@login_router.post("/user/login")
 def login(user: LoginInput):
     if not user.email and not user.phone_number:
         raise HTTPException(status_code=400, detail="Provide either email or phone_number")

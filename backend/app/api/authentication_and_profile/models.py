@@ -14,3 +14,12 @@ class LoginInput(BaseModel):
     email: EmailStr | None = None
     phone_number: str | None = None
     password: str
+
+
+class ProfileUpdateRequest(BaseModel):
+    email: EmailStr | None = None
+    phone_number: str | None = None
+    first_name: str | None = None
+    last_name: str | None = None
+    city: str | None = None
+    birthday: str | None = None
