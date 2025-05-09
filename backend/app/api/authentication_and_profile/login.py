@@ -39,7 +39,7 @@ def login(user: LoginInput):
     if hashed_pwd != user_obj["hashed_password"]:
         raise HTTPException(status_code=401, detail="Incorrect password")
 
-    token_data = {"sub": user_obj["email"]}
+    token_data = {"sub": user_obj["id"]}
     access_token = create_access_token(data=token_data, expires_delta=timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES))
     return {'token': access_token}
 
