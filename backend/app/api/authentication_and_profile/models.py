@@ -1,3 +1,5 @@
+from typing import Literal
+
 from pydantic import BaseModel, EmailStr
 
 
@@ -15,6 +17,10 @@ class LoginInput(BaseModel):
     phone_number: str | None = None
     password: str
 
+
+class LoginExists(BaseModel):
+    value_type: Literal["email", "phone_number"]
+    value: str
 
 class ProfileUpdateRequest(BaseModel):
     email: EmailStr | None = None
