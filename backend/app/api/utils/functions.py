@@ -1,6 +1,8 @@
 import hashlib
 from datetime import datetime, timedelta
-from fastapi import HTTPException, Header
+from typing import Optional
+from fastapi import HTTPException, Header, status, Cookie, Depends
+from fastapi.security import HTTPBearer
 from jose import jwt, JWTError
 from api.utils.supabase_client import supabase_client
 
@@ -27,22 +29,38 @@ def create_access_token(data: dict, expires_delta: timedelta | None = None):
     return jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
 
 
-def get_current_user_id(authorization: str = Header(...)):
-    if not authorization.startswith("Bearer "):
-        raise HTTPException(status_code=401, detail="Invalid token header")
+async def get_current_user_id(
+        authorization: Optional[str] = Header(None),
+) -> int:
+    if not authorization or not authorization.startswith("Bearer "):
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Not authenticated",
+        )
 
-    token = authorization.split(" ")[1]
+    jwt_token = authorization.split(" ")[1]
 
     try:
-        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        payload = jwt.decode(jwt_token, SECRET_KEY, algorithms=[ALGORITHM])
         email = payload.get("sub")
         if not email:
-            raise HTTPException(status_code=401, detail="Token payload invalid")
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Invalid token payload",
+            )
     except JWTError:
-        raise HTTPException(status_code=401, detail="Invalid token")
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid or expired token",
+        )
 
-    user = supabase_client.table("users").select("id").eq("email", email).execute().data
-    if not user:
-        raise HTTPException(status_code=404, detail="User not found")
+    response = supabase_client.table("users").select("id").eq("email", email).execute()
+    user_data = response.data
 
-    return user[0]["id"]
+    if not user_data:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="User not found",
+        )
+
+    return user_data[0]["id"]

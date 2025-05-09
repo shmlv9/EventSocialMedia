@@ -6,14 +6,13 @@ import SelectMethod from "@/components/auth/login/SelectMethod";
 import CheckedInput from "@/components/auth/login/CheckedInput";
 import {checkLogin, checkUserExists} from "@/lib/api/auth";
 import {validateEmail, validatePhone} from "@/utils/validation";
-import {useRouter} from "next/navigation"; // Ваш API-метод
+import {useRouter} from "next/navigation";
 
 export default function LoginMenu() {
-    const [loginMethod, setLoginMethod] = useState<'email' | 'phone'>('email');
+    const [loginMethod, setLoginMethod] = useState<"email" | "phone_number">("email");
     const [loginValue, setLoginValue] = useState('');
     const [password, setPassword] = useState('');
     const [step, setStep] = useState<'auth' | 'password'>('auth');
-    const [rememberMe, setRememberMe] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [isLoading, setIsLoading] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
@@ -25,7 +24,7 @@ export default function LoginMenu() {
             return;
         }
 
-        if (loginMethod === 'phone' && !validatePhone(loginValue)) {
+        if (loginMethod === 'phone_number' && !validatePhone(loginValue)) {
             setError('Введите корректный номер телефона');
             return;
         }
@@ -56,7 +55,7 @@ export default function LoginMenu() {
         try {
             const userLogin = await checkLogin(loginMethod, loginValue, password);
             if (userLogin) {
-               router.push('/');
+               router.push('/home');
             } else {
                 setError('Пользователь не найден.');
             }
@@ -104,7 +103,7 @@ return (
                                 {loginMethod === 'email' ? 'Email' : 'Телефон'}
                             </label>
                             <input
-                                type={loginMethod === 'email' ? 'email' : 'tel'}
+                                type={loginMethod === 'email' ? 'email' : 'phone_number'}
                                 id="login"
                                 value={loginValue}
                                 onChange={(e) => setLoginValue(e.target.value)}
@@ -113,10 +112,6 @@ return (
                             />
                         </div>
 
-                        <CheckedInput
-                            rememberMe={rememberMe}
-                            setRememberMe={setRememberMe}
-                        />
                     </div>
 
                     <Button
@@ -186,10 +181,6 @@ return (
                             </button>
                         </div>
 
-                        <CheckedInput
-                            rememberMe={rememberMe}
-                            setRememberMe={setRememberMe}
-                        />
                     </div>
                     <Button
                         onClick={handleLogin}

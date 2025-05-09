@@ -1,6 +1,6 @@
 type Props = {
-    loginMethod: 'email' | 'phone';
-    setLoginMethod: (method: 'email' | 'phone') => void;
+    loginMethod: 'email' | 'phone_number';
+    setLoginMethod: (method: 'email' | 'phone_number') => void;
 };
 
 export default function SelectMethod({ loginMethod, setLoginMethod }: Props) {
@@ -26,9 +26,9 @@ export default function SelectMethod({ loginMethod, setLoginMethod }: Props) {
                     Почта
                 </button>
                 <button
-                    onClick={() => setLoginMethod('phone')}
+                    onClick={() => setLoginMethod('phone_number')}
                     className={`flex-1 py-2 px-4 rounded-full font-medium transition-colors duration-300 ${
-                        loginMethod === 'phone'
+                        loginMethod === 'phone_number'
                             ? 'text-emerald-600'
                             : 'text-gray-500 hover:text-gray-700'
                     }`}

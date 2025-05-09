@@ -1,6 +1,5 @@
 import re
 from datetime import timedelta
-from typing import Literal
 
 from config import SUPABASE_URL, SUPABASE_KEY, SECRET_KEY, ALGORITHM, ACCESS_TOKEN_EXPIRE_MINUTES
 from fastapi import APIRouter, HTTPException
@@ -29,8 +28,8 @@ def login(user: LoginInput):
     elif user.phone_number:
         query = query.eq("phone_number", user.phone_number)
 
-    response = query.execute()
-    user_obj = response.data[0] if response.data else None
+    resp = query.execute()
+    user_obj = resp.data[0] if resp.data else None
 
     if not user_obj:
         raise HTTPException(status_code=401, detail="User not found")
@@ -42,8 +41,7 @@ def login(user: LoginInput):
 
     token_data = {"sub": user_obj["email"]}
     access_token = create_access_token(data=token_data, expires_delta=timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES))
-
-    return {"access_token": access_token, "token_type": "bearer"}
+    return {'token': access_token}
 
 
 @login_router.post("/user/exists")
