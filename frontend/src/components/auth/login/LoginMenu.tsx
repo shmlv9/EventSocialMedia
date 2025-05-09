@@ -33,6 +33,7 @@ export default function LoginMenu() {
 
         try {
             const userExists = await checkUserExists(loginMethod, loginValue);
+            console.log(userExists)
             if (userExists) {
                 setStep('password');
             } else {

@@ -60,7 +60,9 @@ def user_exists(
         )
     try:
         result = supabase.table("users").select('id').eq(info.value_type, info.value).limit(1).execute().data
-        return {"exists": bool(result)}
+        if result:
+            return {'success': True}
+        raise HTTPException(status_code=404, detail="User not found")
     except Exception as e:
         raise HTTPException(
             status_code=400,

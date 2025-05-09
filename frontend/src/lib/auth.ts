@@ -15,7 +15,6 @@ export async function checkUserExists(
                 value: value,
             }),
         });
-
         return response.ok;
     } catch (error) {
         console.error('Error checking user:', error);
