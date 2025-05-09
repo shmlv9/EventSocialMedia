@@ -42,25 +42,16 @@ async def get_current_user_id(
 
     try:
         payload = jwt.decode(jwt_token, SECRET_KEY, algorithms=[ALGORITHM])
-        email = payload.get("sub")
-        if not email:
+        user_id = payload.get("sub")
+        if not user_id:
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
                 detail="Invalid token payload",
             )
+        return int(user_id)
+
     except JWTError:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Invalid or expired token",
         )
-
-    response = supabase_client.table("users").select("id").eq("email", email).execute()
-    user_data = response.data
-
-    if not user_data:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="User not found",
-        )
-
-    return user_data[0]["id"]
