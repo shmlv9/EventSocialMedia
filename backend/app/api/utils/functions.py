@@ -47,7 +47,6 @@ async def get_current_user_id(
         return int(user_id)
 
     except JWTError as e:
-        print(e)
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Invalid or expired token",

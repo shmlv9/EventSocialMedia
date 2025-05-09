@@ -4,8 +4,8 @@ import { useState } from 'react';
 import Button from "@/components/ui/shared/Button";
 import {validateEmail, validateName, validatePhone} from "@/utils/validation";
 import {DatePicker} from "@/components/ui/shared/DatePicker";
-import {registerUser} from "@/lib/api/auth";
 import {useRouter} from "next/navigation";
+import {registerUser} from "@/lib/auth";
 
 export default function RegisterMenu() {
     const [email, setEmail] = useState('');
@@ -60,22 +60,20 @@ export default function RegisterMenu() {
                 router.push('/login/');
             }
         } catch (e) {
-            console.error(e);
-            setError('Ошибка регистрации. Попробуйте позже.');
+            setError(String(e));
         } finally {
             setIsLoading(false);
         }
     };
 
     return (
-        <div>
             <div className='bg-white rounded-3xl shadow-lg flex flex-col items-center justify-center p-8 w-full min-w-md max-w-md'>
                 <div className="text-center mb-6">
-                    <h1 className='font-bold text-3xl text-emerald-800 mb-2'>Регистрация</h1>
+                    <h1 className='font-bold text-3xl text-emerald-800 mb-2'>Регистрация в ESM</h1>
                     <h3 className='text-gray-600'>Создайте новый аккаунт</h3>
                 </div>
 
-                <div className='w-full h-8 flex justify-center items-center overflow-hidden'>
+                <div className='w-full h-8 flex justify-center items-center'>
                     {error && (
                         <p className="text-red-500 text-sm mb-4">{error}</p>
                     )}
@@ -258,6 +256,5 @@ export default function RegisterMenu() {
                     </a>
                 </div>
             </div>
-        </div>
     );
 }

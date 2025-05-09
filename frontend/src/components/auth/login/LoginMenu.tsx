@@ -3,8 +3,7 @@
 import {useState} from 'react';
 import Button from "@/components/ui/shared/Button";
 import SelectMethod from "@/components/auth/login/SelectMethod";
-import CheckedInput from "@/components/auth/login/CheckedInput";
-import {checkLogin, checkUserExists} from "@/lib/api/auth";
+import {checkLogin, checkUserExists} from "@/lib/auth";
 import {validateEmail, validatePhone} from "@/utils/validation";
 import {useRouter} from "next/navigation";
 
@@ -68,12 +67,11 @@ export default function LoginMenu() {
     };
 
 return (
-    <div>
         <div
             className='bg-white rounded-3xl shadow-lg flex flex-col items-center justify-center p-8 w-full min-w-md max-w-md'>
             <div className="text-center mb-6">
                 <h1 className='font-bold text-3xl text-emerald-800 mb-2'>
-                    {step === 'auth' ? 'Вход' : 'Введите пароль'}
+                    {step === 'auth' ? 'Вход в ESM' : 'Введите пароль'}
                 </h1>
                 <h3 className='text-gray-600'>
                     {step === 'auth'
@@ -198,6 +196,5 @@ return (
                 </a>
             </div>
         </div>
-    </div>
 );
 }

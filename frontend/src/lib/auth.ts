@@ -1,9 +1,5 @@
 const apiUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
 
-export function getToken() {
-    return localStorage.getItem('token') || sessionStorage.getItem('token')
-}
-
 export async function checkUserExists(
     method: 'email' | 'phone_number',
     value: string
@@ -47,7 +43,7 @@ export async function checkLogin(
         const errorData = await respData;
         throw new Error(errorData.detail || 'Login failed');
     } else {
-        document.cookie = `access_token=${respData.token}; path=/;`
+        document.cookie = `token=${respData.token}; path=/;`
     }
 
     return await respData;

@@ -1,19 +1,93 @@
 import {cookies} from 'next/headers'
 import {redirect} from 'next/navigation'
+import {fetchID} from '@/api/user'
+import NavItem from "@/components/main/NavItem";
+import Button from "@/components/ui/shared/Button";
+import ClientWrapper from "@/components/ClientWrapper";
+import React from "react";
+import {Toaster} from 'react-hot-toast'
 
 export default async function MainLayout({children}: { children: React.ReactNode }) {
-    const cookie = await cookies();
-    const token = cookie.get('access_token')
-    if (!token) {
-        redirect('/login')
-    }
+    const cookieStore = await cookies()
+    const token = cookieStore.get('token')
+    if (!token) redirect('/login')
+
+    const userID = await fetchID()
+    if (!userID || userID.detail) redirect('/logout')
+
 
     return (
-        <div>
-            <header>
-                <h1>Моя социальная сеть</h1>
-            </header>
-            <main>{children}</main>
-        </div>
+        <ClientWrapper userID={userID}>
+            <div className="min-h-screen">
+                {/* Десктоп */}
+                <div className="hidden md:flex h-full max-w-7xl mx-auto gap-4 p-4">
+                    <aside
+                        className="sticky top-4 h-[calc(100vh-32px)] w-64 bg-white border border-gray-200 rounded-3xl shadow-sm flex flex-col flex-shrink-0">
+                        <div className="p-4 border-b border-gray-200 flex flex-col items-center">
+                            <h1 className='font-bold text-3xl text-emerald-800 mb-2'>ESM</h1>
+                            <h3 className='text-gray-600'>Соцсеть для Т2</h3>
+                        </div>
+
+                        <nav className="p-4 space-y-1 flex-grow">
+                            <NavItem href="/home" icon="1">Главная</NavItem>
+                            <NavItem href="/messanger" icon="2">Сообщения</NavItem>
+                            <NavItem href={`/profile/${userID}`} icon="3">Профиль</NavItem>
+                        </nav>
+
+                        <form action="/logout" method="POST" className="p-4">
+                            <Button>Выйти</Button>
+                        </form>
+                    </aside>
+
+                    <main className="flex-1 bg-white rounded-3xl overflow-y-auto p-4">
+                        <Toaster
+                            position="top-center"
+                            toastOptions={{
+                                style: {
+                                    borderRadius: '12px',
+                                    background: '#10b981',
+                                    color: 'white',
+                                    fontSize: '1rem',
+                                    padding: '16px 20px',
+                                    boxShadow: '0 8px 30px rgba(16, 185, 129, 0.2)',
+                                },
+                                success: {
+                                    iconTheme: {
+                                        primary: '#059669',
+                                        secondary: 'white',
+                                    },
+                                },
+                                error: {
+                                    style: {
+                                        background: '#f87171',
+                                        color: 'white',
+                                    },
+                                    iconTheme: {
+                                        primary: '#dc2626',
+                                        secondary: 'white',
+                                    },
+                                },
+                            }}
+                        />
+                        {children}
+                    </main>
+                </div>
+
+                {/* Мобилка */}
+                <div className="md:hidden flex flex-col min-h-screen">
+                    <main className="flex-1 overflow-auto p-4 pb-16">
+                        {children}
+                    </main>
+                    <nav
+                        className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 shadow-lg m-5 rounded-3xl">
+                        <div className="flex">
+                            <NavItem href="/home" icon="1" mobile/>
+                            <NavItem href="/messanger" icon="2" mobile/>
+                            <NavItem href={`/profile/${userID}`} icon="3" mobile/>
+                        </div>
+                    </nav>
+                </div>
+            </div>
+        </ClientWrapper>
     )
 }

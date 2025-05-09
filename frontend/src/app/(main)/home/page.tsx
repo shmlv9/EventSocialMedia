@@ -1,3 +1,3 @@
-export default function ProtectedPage() {
-    return <div>Только для авторизованных</div>
+export default function HomePage() {
+    return <div>Home</div>
 }
