@@ -1,5 +1,5 @@
 import Link from "next/link";
-import SettingsMenu from "@/components/profile/SettingMenu";
+import SettingsMenu from "@/components/profile/settings/SettingMenu";
 
 export default async function SettingsPage() {
     return (

@@ -1,9 +1,9 @@
 'use client'
 
 import {useState} from "react"
-import ProfileSettings from "@/components/profile/ProfileSettings";
-import NavSettings from "@/components/profile/NavSettings";
-import TagsSettings from "@/components/profile/TagsSettings";
+import ProfileSettings from "@/components/profile/settings/ProfileSettings";
+import NavSettings from "@/components/profile/settings/NavSettings";
+import TagsSettings from "@/components/profile/settings/TagsSettings";
 
 
 export default function SettingsMenu() {

@@ -41,6 +41,7 @@ export async function checkLogin(
     if (!response.ok) {
         const errorData = await respData;
         throw new Error(errorData.detail || 'Login failed');
+
     } else {
         document.cookie = `token=${respData.token}; path=/;`
     }

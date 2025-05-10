@@ -3,15 +3,18 @@ from api.utils.supabase_client import supabase_client
 from api.utils.functions import get_current_user_id
 from api.authentication_and_profile.models import ProfileUpdateRequest
 
-profile_router = APIRouter()
+profile_router = APIRouter(
+    tags=["profile"],
+    prefix="/user/profile",
+)
 
 
-@profile_router.get('/user/me')
+@profile_router.get('/me')
 def get_me(user_id: int = Depends(get_current_user_id)):
     return user_id
 
 
-@profile_router.patch("/user/profile")
+@profile_router.patch("")
 def update_profile(
         profile_data: ProfileUpdateRequest,
         user_id: int = Depends(get_current_user_id)
@@ -25,14 +28,14 @@ def update_profile(
     return {"msg": "Profile updated successfully"}
 
 
-@profile_router.delete("/user/profile")
+@profile_router.delete("")
 def delete_profile(user_id: int = Depends(get_current_user_id)):
     supabase_client.table("users").delete().eq("id", user_id).execute()
 
     return {"msg": "Profile deleted successfully"}
 
 
-@profile_router.get("/user/profile/{user_id}")
+@profile_router.get("/{user_id}")
 def get_profile(user_id: int, current_user_id: int = Depends(get_current_user_id)):
     if user_id != current_user_id:
         result = supabase_client.table("users").select(

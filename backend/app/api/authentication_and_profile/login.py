@@ -10,7 +10,9 @@ from api.utils.functions import normalize_phone_number, hash_password, create_ac
 from api.authentication_and_profile.models import LoginExists
 
 supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
-login_router = APIRouter()
+login_router = APIRouter(
+    tags=["auth"],
+)
 
 
 @login_router.post("/user/login")
