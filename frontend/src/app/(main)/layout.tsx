@@ -2,10 +2,8 @@ import {cookies} from 'next/headers'
 import {redirect} from 'next/navigation'
 import {fetchID} from '@/lib/api/apiUser'
 import NavItem from "@/components/main/NavItem";
-import Button from "@/components/ui/Button";
 import ClientWrapper from "@/context/ClientWrapper";
 import React from "react";
-import {Toaster} from 'react-hot-toast'
 
 export default async function MainLayout({children}: { children: React.ReactNode }) {
     const cookieStore = await cookies()

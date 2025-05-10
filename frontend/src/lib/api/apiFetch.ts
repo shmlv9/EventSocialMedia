@@ -4,6 +4,7 @@ import {cookies} from "next/headers";
 export async function apiFetch(url: string, params: { method: string; body?: string }) {
     const token = (await cookies()).get('token')?.value;
     const apiUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
+    console.log(apiUrl)
 
     if (!token) {
         console.error('No token found')
