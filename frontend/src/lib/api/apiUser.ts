@@ -1,6 +1,6 @@
 'use server'
 
-import {apiFetch} from "@/lib/api";
+import {apiFetch} from "@/lib/api/apiFetch";
 
 export async function fetchID() {
     const response = await apiFetch(`/user/me`, {

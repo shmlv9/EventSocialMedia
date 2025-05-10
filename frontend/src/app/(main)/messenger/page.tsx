@@ -1,9 +1,9 @@
 import React from 'react';
 
-export default function EventCard() {
+export default function MessengerPage() {
   return (
     <div>
-      Карточка
+      MessengerPage
     </div>
   );
 };
