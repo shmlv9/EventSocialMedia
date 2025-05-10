@@ -98,7 +98,7 @@ export default function FriendsMenu({id, friendsData, requestsData}: Props) {
         router.push(`/profile/${id}`)
     };
     return (
-        <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-4">
+        <div className="bg-white rounded-3xl shadow-sm border border-gray-100 p-4">
             {/* Заголовок */}
             <div className="flex justify-between items-center mb-6">
                 <h2 className="text-xl font-bold text-gray-800">{userID === id ? (<p>Мои друзья</p>) : (

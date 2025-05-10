@@ -35,7 +35,7 @@ export default async function MainLayout({children}: { children: React.ReactNode
                         </nav>
 
                         <form action="/logout" method="POST" className="p-4">
-                            <Button>Выйти</Button>
+                            <button className={'p-2 rounded-3xl bg-emerald-600 text-white w-full hover:cursor-pointer hover:bg-emerald-700'}>Выйти</button>
                         </form>
                     </aside>
 

@@ -98,7 +98,7 @@ export default function ProfileSettings() {
                             />
                             <button
                                 type="button"
-                                className="px-4 py-2 bg-emerald-50 text-emerald-600 rounded-3xl hover:bg-emerald-100 text-sm"
+                                className="px-4 py-2 bg-emerald-50 text-emerald-600 rounded-3xl hover:bg-emerald-100 text-sm hover:cursor-pointer"
                                 onClick={() => alert("Иди нахуй")}
                             >
                                 Изменить фото
@@ -191,7 +191,7 @@ export default function ProfileSettings() {
                         <button
                             type="submit"
                             disabled={!hasChanges}
-                            className={`px-6 py-2 ${hasChanges ? 'bg-emerald-600' : 'bg-gray-300 hover:bg-gray-400'} text-white rounded-3xl hover:bg-emerald-700 transition-colors flex flex-row`}
+                            className={`hover:cursor-pointer px-6 py-2 ${hasChanges ? 'bg-emerald-600' : 'bg-gray-300 hover:bg-gray-400'} text-white rounded-3xl hover:bg-emerald-700 transition-colors flex flex-row`}
                         >
                             Сохранить изменения
                         </button>

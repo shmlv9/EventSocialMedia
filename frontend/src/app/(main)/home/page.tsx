@@ -1,7 +1,7 @@
-import ToastButton from "@/components/ui/ToastButton";
+import EventCard from "@/components/events/EventCard";
 
 export default function HomePage() {
     return <div>
-        <ToastButton msg={'Тык'} />
+       <EventCard id={'1'} />
     </div>
 }

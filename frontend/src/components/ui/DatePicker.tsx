@@ -65,7 +65,7 @@ export function DatePicker({ label = 'Дата рождения', selectedDate, 
                         setDay(newDay)
                         handleUpdate(newDay, month, year)
                     }}
-                    className="flex px-3 py-2 border border-gray-300 rounded-xl focus:ring-emerald-500 focus:outline-none w-auto"
+                    className="hover:cursor-pointer flex px-3 py-2 border border-gray-300 rounded-xl focus:ring-emerald-500 focus:outline-none w-auto"
                 >
                     <option value="">День</option>
                     {Array.from({ length: 31 }, (_, i) => {
@@ -85,7 +85,7 @@ export function DatePicker({ label = 'Дата рождения', selectedDate, 
                         setMonth(newMonth)
                         handleUpdate(day, newMonth, year)
                     }}
-                    className="flex-1 px-3 py-2 border border-gray-300 rounded-xl focus:ring-emerald-500 focus:outline-none w-auto"
+                    className="hover:cursor-pointer flex-1 px-3 py-2 border border-gray-300 rounded-xl focus:ring-emerald-500 focus:outline-none w-auto"
                 >
                     <option value="">Месяц</option>
                     {months.map((m) => (
@@ -102,7 +102,7 @@ export function DatePicker({ label = 'Дата рождения', selectedDate, 
                         setYear(newYear)
                         handleUpdate(day, month, newYear)
                     }}
-                    className="flex-1 px-3 py-2 border border-gray-300 rounded-xl focus:ring-emerald-500 focus:outline-none w-auto"
+                    className="hover:cursor-pointer flex-1 px-3 py-2 border border-gray-300 rounded-xl focus:ring-emerald-500 focus:outline-none w-auto"
                 >
                     <option value="">Год</option>
                     {years.map((y) => (
