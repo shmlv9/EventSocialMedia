@@ -3,7 +3,7 @@
 import {apiFetch} from "@/lib/api/apiFetch";
 
 export async function fetchID() {
-    const response = await apiFetch(`/user/me`, {
+    const response = await apiFetch(`/user/profile/me`, {
         method: 'GET',
     });
     if (!response.ok) return null;

@@ -17,7 +17,7 @@ export default async function MainLayout({children}: { children: React.ReactNode
 
 
     return (
-        <ClientWrapper userID={userID}>
+        <ClientWrapper userID={String(userID)}>
             <div className="min-h-screen">
                 {/* Десктоп */}
                 <div className="hidden md:flex h-full max-w-7xl mx-auto gap-4 p-4">
@@ -40,35 +40,6 @@ export default async function MainLayout({children}: { children: React.ReactNode
                     </aside>
 
                     <main className="flex-1 bg-white rounded-3xl overflow-y-auto p-4">
-                        <Toaster
-                            position="top-center"
-                            toastOptions={{
-                                style: {
-                                    borderRadius: '12px',
-                                    background: '#10b981',
-                                    color: 'white',
-                                    fontSize: '1rem',
-                                    padding: '16px 20px',
-                                    boxShadow: '0 8px 30px rgba(16, 185, 129, 0.2)',
-                                },
-                                success: {
-                                    iconTheme: {
-                                        primary: '#059669',
-                                        secondary: 'white',
-                                    },
-                                },
-                                error: {
-                                    style: {
-                                        background: '#f87171',
-                                        color: 'white',
-                                    },
-                                    iconTheme: {
-                                        primary: '#dc2626',
-                                        secondary: 'white',
-                                    },
-                                },
-                            }}
-                        />
                         {children}
                     </main>
                 </div>
@@ -76,35 +47,6 @@ export default async function MainLayout({children}: { children: React.ReactNode
                 {/* Мобилка */}
                 <div className="md:hidden flex flex-col min-h-screen">
                     <main className="flex-1 overflow-auto p-4 pb-16">
-                        <Toaster
-                            position="top-center"
-                            toastOptions={{
-                                style: {
-                                    borderRadius: '12px',
-                                    background: '#10b981',
-                                    color: 'white',
-                                    fontSize: '1rem',
-                                    padding: '16px 20px',
-                                    boxShadow: '0 8px 30px rgba(16, 185, 129, 0.2)',
-                                },
-                                success: {
-                                    iconTheme: {
-                                        primary: '#059669',
-                                        secondary: 'white',
-                                    },
-                                },
-                                error: {
-                                    style: {
-                                        background: '#f87171',
-                                        color: 'white',
-                                    },
-                                    iconTheme: {
-                                        primary: '#dc2626',
-                                        secondary: 'white',
-                                    },
-                                },
-                            }}
-                        />
                         {children}
                     </main>
                     <nav

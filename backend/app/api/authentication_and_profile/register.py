@@ -3,7 +3,9 @@ from api.authentication_and_profile.models import RegisterRequest
 from api.utils.functions import normalize_phone_number, hash_password
 from api.utils.supabase_client import supabase_client
 
-register_router = APIRouter()
+register_router = APIRouter(
+    tags=["auth"],
+)
 
 
 @register_router.post("/user/register")

@@ -1,3 +1,7 @@
+import ToastButton from "@/components/ui/ToastButton";
+
 export default function HomePage() {
-    return <div>Home</div>
+    return <div>
+        <ToastButton msg={'Тык'} />
+    </div>
 }

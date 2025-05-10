@@ -49,7 +49,7 @@ export default function ProfileSettings() {
         async function loadProfile() {
             const profile = await fetchProfile(userID);
             setFormData(profile);
-            setOriginalData(profile); // Сохраняем исходные данные
+            setOriginalData(profile);
             setLoading(false);
         }
 
@@ -114,7 +114,7 @@ export default function ProfileSettings() {
                                 type="text"
                                 id="first_name"
                                 name="first_name"
-                                value={formData.first_name}
+                                value={formData.first_name ?? ""}
                                 onChange={handleChange}
                                 className="w-full px-4 py-2 border border-gray-300 rounded-3xl focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
                             />
@@ -126,7 +126,7 @@ export default function ProfileSettings() {
                                 type="text"
                                 id="last_name"
                                 name="last_name"
-                                value={formData.last_name}
+                                value={formData.last_name ?? ""}
                                 onChange={handleChange}
                                 className="w-full px-4 py-2 border border-gray-300 rounded-3xl focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
                             />
@@ -138,7 +138,7 @@ export default function ProfileSettings() {
                                 type="email"
                                 id="email"
                                 name="email"
-                                value={formData.email}
+                                value={formData.email ?? ""}
                                 onChange={handleChange}
                                 className="w-full px-4 py-2 border border-gray-300 rounded-3xl focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
                             />
@@ -150,7 +150,7 @@ export default function ProfileSettings() {
                                 type="tel"
                                 id="phone_number"
                                 name="phone_number"
-                                value={formData.phone_number}
+                                value={formData.phone_number ?? ""}
                                 onChange={handleChange}
                                 className="w-full px-4 py-2 border border-gray-300 rounded-3xl focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
                             />
@@ -163,7 +163,7 @@ export default function ProfileSettings() {
                                 type="text"
                                 id="city"
                                 name="city"
-                                value={formData.city}
+                                value={formData.city ?? ""}
                                 onChange={handleChange}
                                 className="w-full px-4 py-2 border border-gray-300 rounded-3xl focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
                             />
@@ -176,14 +176,14 @@ export default function ProfileSettings() {
                             id="bio"
                             name="bio"
                             rows={3}
-                            value={formData.bio}
+                            value={formData.bio ?? ""}
                             onChange={handleChange}
                             className="w-full px-4 py-2 border border-gray-300 rounded-3xl focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
                         />
                     </div>
 
                     <div className="mb-6">
-                        <DatePicker selectedDate={formData.birthday}
+                        <DatePicker selectedDate={formData.birthday ?? ""}
                                     onChange={(date) => setDateBirth(date)}></DatePicker>
                     </div>
 

@@ -32,7 +32,7 @@ def create_access_token(data: dict, expires_delta: timedelta | None = None):
 security = HTTPBearer()
 
 
-async def get_current_user_id(
+def get_current_user_id(
         credentials: HTTPAuthorizationCredentials = Depends(security),
 ) -> int:
     token = credentials.credentials
