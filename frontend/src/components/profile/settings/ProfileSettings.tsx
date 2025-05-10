@@ -14,7 +14,7 @@ type UserProfile = {
     phone_number: string
     city: string
     bio: string
-    avatar: string
+    avatar: string | File;
     birthday: string
 }
 
@@ -78,6 +78,10 @@ export default function ProfileSettings() {
         setFormData(prev => ({...prev, [name]: value}));
     }
 
+    function handleFile(file: File) {
+        setFormData(prev => ({...prev, ['avatar']: file}));
+    }
+
     console.log(formData);
     return (
         <div>
@@ -96,13 +100,18 @@ export default function ProfileSettings() {
                                 alt=""
                                 className="w-16 h-16 rounded-full object-cover mr-4"
                             />
-                            <button
-                                type="button"
-                                className="px-4 py-2 bg-emerald-50 text-emerald-600 rounded-3xl hover:bg-emerald-100 text-sm hover:cursor-pointer"
-                                onClick={() => alert("Иди нахуй")}
-                            >
-                                Изменить фото
-                            </button>
+                            <label
+                                className="inline-block px-4 py-2 bg-emerald-50 text-emerald-600 rounded-3xl hover:bg-emerald-100 text-sm cursor-pointer">
+                                Загрузить изображение {formData.avatar && <span>(Загружено)</span>}
+                                <input
+                                    type="file"
+                                    accept="image/*"
+                                    onChange={(e) => {
+                                        if (e.target.files) handleFile(e.target.files[0]);
+                                    }}
+                                    className="hidden"
+                                />
+                            </label>
                         </div>
                     </div>
 
