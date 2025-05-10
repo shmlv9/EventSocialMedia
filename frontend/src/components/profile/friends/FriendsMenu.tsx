@@ -61,6 +61,7 @@ export default function FriendsMenu({id, friendsData, requestsData}: Props) {
         }
     };
 
+
     const handleAcceptRequest = async (id: string) => {
         try {
             const success = await acceptRequest(id);
@@ -148,14 +149,15 @@ export default function FriendsMenu({id, friendsData, requestsData}: Props) {
                                     <h4 className="font-medium">{friend.first_name} {friend.last_name} {userID === String(friend.id) &&
                                         <span className={'text-emerald-700 text-sm'}> - это вы</span>}</h4>
                                 </div>
-                                <button
+                                {userID === id && (<button
                                     onClick={() => handleDeleteFriend(friend.id)}
-                                    className="text-emerald-600 hover:text-emerald-900 flex items-center text-sm active:scale-90 duration-100"
+                                    className="text-emerald-600 hover:cursor-pointer hover:text-emerald-900 flex items-center text-sm active:scale-90 duration-100"
                                 >
                                     <FiUserX className="mr-1"/>
                                     Удалить
-                                </button>
+                                </button>)}
                             </div>
+
                         ))
                     ) : (
                         <p className="text-center text-gray-500 py-4">
@@ -183,13 +185,13 @@ export default function FriendsMenu({id, friendsData, requestsData}: Props) {
                                 <div className="flex space-x-2">
                                     <button
                                         onClick={() => handleAcceptRequest(request.id)}
-                                        className="px-4 py-1 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 text-sm"
+                                        className="px-4 py-1 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 text-sm hover:cursor-pointer"
                                     >
                                         <GrCheckmark/>
                                     </button>
                                     <button
                                         onClick={() => handleRejectRequest(request.id)}
-                                        className="px-4 py-1 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 text-sm"
+                                        className="px-4 py-1 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 text-sm hover:cursor-pointer"
                                     >
                                         <RxCross1/>
                                     </button>

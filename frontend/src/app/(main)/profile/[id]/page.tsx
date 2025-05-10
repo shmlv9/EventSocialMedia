@@ -97,7 +97,7 @@ export default async function ProfilePage({params}: { params: { id: string } }) 
                 </div>
 
                 <div className='mb-8 justify-center items-center flex flex-col'>
-                    <h1 className='text-2xl font-bold text-gray-800 mb-4'>Мои мероприятия</h1>
+                    <h1 className='text-2xl font-bold text-gray-800 mb-4'>{String(userID) === String(id) ? 'Мои мероприятия' : 'Мероприятия'}</h1>
                     <div className='space-y-4'>
 
                         Карточка
