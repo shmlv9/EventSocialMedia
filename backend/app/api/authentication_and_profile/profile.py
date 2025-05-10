@@ -6,10 +6,15 @@ from api.authentication_and_profile.models import ProfileUpdateRequest
 profile_router = APIRouter()
 
 
+@profile_router.get('/user/me')
+def get_me(user_id: int = Depends(get_current_user_id)):
+    return user_id
+
+
 @profile_router.patch("/user/profile")
 def update_profile(
-    profile_data: ProfileUpdateRequest,
-    user_id: int = Depends(get_current_user_id)
+        profile_data: ProfileUpdateRequest,
+        user_id: int = Depends(get_current_user_id)
 ):
     update_data = {k: v for k, v in profile_data.dict().items() if v is not None}
     if not update_data:

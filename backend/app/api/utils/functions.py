@@ -2,7 +2,7 @@ import hashlib
 from datetime import datetime, timedelta
 from typing import Optional
 from fastapi import HTTPException, Header, status, Cookie, Depends
-from fastapi.security import HTTPBearer
+from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from jose import jwt, JWTError
 from api.utils.supabase_client import supabase_client
 
@@ -29,38 +29,25 @@ def create_access_token(data: dict, expires_delta: timedelta | None = None):
     return jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
 
 
+security = HTTPBearer()
+
+
 async def get_current_user_id(
-        authorization: Optional[str] = Header(None),
+        credentials: HTTPAuthorizationCredentials = Depends(security),
 ) -> int:
-    if not authorization or not authorization.startswith("Bearer "):
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Not authenticated",
-        )
-
-    jwt_token = authorization.split(" ")[1]
-
+    token = credentials.credentials
     try:
-        payload = jwt.decode(jwt_token, SECRET_KEY, algorithms=[ALGORITHM])
-        email = payload.get("sub")
-        if not email:
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        user_id = payload.get("sub")
+        if not user_id:
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
                 detail="Invalid token payload",
             )
-    except JWTError:
+        return int(user_id)
+
+    except JWTError as e:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Invalid or expired token",
         )
-
-    response = supabase_client.table("users").select("id").eq("email", email).execute()
-    user_data = response.data
-
-    if not user_data:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="User not found",
-        )
-
-    return user_data[0]["id"]
