@@ -4,10 +4,10 @@ from datetime import timedelta
 from config import SUPABASE_URL, SUPABASE_KEY, SECRET_KEY, ALGORITHM, ACCESS_TOKEN_EXPIRE_MINUTES
 from fastapi import APIRouter, HTTPException
 from supabase import create_client
-from api.authentication_and_profile.models import LoginInput
+from api.utils.models import LoginInput
 from api.utils.functions import normalize_phone_number, hash_password, create_access_token
 
-from api.authentication_and_profile.models import LoginExists
+from api.utils.models import LoginExists
 
 supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
 login_router = APIRouter(

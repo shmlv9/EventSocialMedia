@@ -1,4 +1,4 @@
-from api.authentication_and_profile.models import ProfileUpdateRequest
+from api.utils.models import ProfileUpdateRequest
 from api.utils.functions import get_current_user_id
 from api.utils.supabase_client import supabase_client
 from fastapi import APIRouter, Depends, HTTPException

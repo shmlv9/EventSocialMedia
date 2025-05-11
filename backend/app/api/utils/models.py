@@ -1,5 +1,6 @@
-from typing import Literal
-from pydantic import BaseModel, EmailStr
+from datetime import datetime
+from typing import Literal, Optional, List
+from pydantic import BaseModel, EmailStr, Field
 
 
 class RegisterRequest(BaseModel):
@@ -21,6 +22,7 @@ class LoginExists(BaseModel):
     value_type: Literal["email", "phone_number"]
     value: str
 
+
 class ProfileUpdateRequest(BaseModel):
     email: EmailStr | None = None
     phone_number: str | None = None
@@ -28,3 +30,13 @@ class ProfileUpdateRequest(BaseModel):
     last_name: str | None = None
     city: str | None = None
     birthday: str | None = None
+
+
+class EventCreateRequest(BaseModel):
+    title: str
+    description: str
+    location: str
+    start_timestamptz: datetime
+    end_timestamptz: datetime
+    tags: List[str]
+    image: Optional[str] = None
