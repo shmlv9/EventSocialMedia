@@ -4,6 +4,7 @@ from api.authentication_and_profile.register import register_router
 from api.authentication_and_profile.login import login_router
 from api.authentication_and_profile.profile import profile_router
 from api.friends.friends import friends_router
+from api.global_search.search import search_router
 
 app = FastAPI()
 
@@ -19,3 +20,4 @@ app.include_router(register_router)
 app.include_router(login_router)
 app.include_router(profile_router)
 app.include_router(friends_router)
+app.include_router(search_router)

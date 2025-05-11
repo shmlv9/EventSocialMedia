@@ -101,14 +101,15 @@ def reject_friend_request(sender_id: int, user_id: int = Depends(get_current_use
 @friends_router.delete("/{friend_id}")
 def remove_friend(friend_id: int, user_id: int = Depends(get_current_user_id)):
     response = supabase_client.table("friends").select("*").or_(
-        f"sender_id.eq.{user_id},recipient_id.eq.{friend_id},sender_id.eq.{friend_id},recipient_id.eq.{user_id}"
+        f"and(sender_id.eq.{user_id},recipient_id.eq.{friend_id}),and(sender_id.eq.{friend_id},recipient_id.eq.{user_id})"
     ).eq("status", True).execute().data
 
     if not response:
         raise HTTPException(status_code=404, detail="Friend relationship not found")
 
     supabase_client.table("friends").delete().or_(
-        f"sender_id.eq.{user_id},recipient_id.eq.{friend_id},sender_id.eq.{friend_id},recipient_id.eq.{user_id}"
+        f"and(sender_id.eq.{user_id},recipient_id.eq.{friend_id}),and(sender_id.eq.{friend_id},recipient_id.eq.{user_id})"
     ).execute()
 
     return {"msg": "Friend removed"}
+
