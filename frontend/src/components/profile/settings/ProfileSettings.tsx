@@ -3,7 +3,7 @@
 import React, {useEffect, useState} from 'react'
 import {FiUser} from 'react-icons/fi'
 import {useUser} from "@/context/userContext";
-import {fetchProfile, updateProfile} from "@/lib/api/apiUser";
+import {fetchProfileClient, updateProfile} from "@/lib/api/apiUser";
 import {DatePicker} from "@/components/ui/DatePicker";
 import toast from "react-hot-toast";
 
@@ -47,7 +47,7 @@ export default function ProfileSettings() {
 
     useEffect(() => {
         async function loadProfile() {
-            const profile = await fetchProfile(userID);
+            const profile = await fetchProfileClient(userID);
             setFormData(profile);
             setOriginalData(profile);
             setLoading(false);

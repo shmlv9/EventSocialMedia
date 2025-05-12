@@ -1,12 +1,16 @@
 import {apiFetch} from "@/lib/api/apiFetch";
 import {apiFetchClient} from "@/lib/api/apiFetchClient";
 
-export async function fetchEvents() {
-    const response = await apiFetch(`/events/filter`, {
+export async function fetchEvents(filter: string) {
+    const response = await apiFetchClient(`/events/filter?filter_type=${filter}`, {
         method: 'GET',
-        body: {
-            filter_type: 'recommendations'
-        }
+    })
+    return response.json();
+}
+
+export async function fetchEvent(id: string) {
+        const response = await apiFetch(`/events/${id}`, {
+        method: 'GET',
     })
     return response.json();
 }

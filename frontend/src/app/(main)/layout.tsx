@@ -27,13 +27,15 @@ export default async function MainLayout({children}: { children: React.ReactNode
                         </div>
 
                         <nav className="p-4 space-y-1 flex-grow">
-                            <NavItem href="/home" icon="1">Главная</NavItem>
+                            <NavItem href="/events" icon="1">Главная</NavItem>
                             <NavItem href="/messenger" icon="2">Сообщения</NavItem>
                             <NavItem href={`/profile/${userID}`} icon="3">Профиль</NavItem>
                         </nav>
 
                         <form action="/logout" method="POST" className="p-4">
-                            <button className={'p-2 rounded-3xl bg-emerald-600 text-white w-full hover:cursor-pointer hover:bg-emerald-700'}>Выйти</button>
+                            <button
+                                className={'p-2 rounded-3xl bg-emerald-600 text-white w-full hover:cursor-pointer hover:bg-emerald-700'}>Выйти
+                            </button>
                         </form>
                     </aside>
 
@@ -50,7 +52,7 @@ export default async function MainLayout({children}: { children: React.ReactNode
                     <nav
                         className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 shadow-lg m-5 rounded-3xl">
                         <div className="flex">
-                            <NavItem href="/home" icon="1" mobile/>
+                            <NavItem href="/events" icon="1" mobile/>
                             <NavItem href="/messenger" icon="2" mobile/>
                             <NavItem href={`/profile/${userID}`} icon="3" mobile/>
                         </div>

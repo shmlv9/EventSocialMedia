@@ -40,12 +40,13 @@ def get_filtered_events(
 ):
     if filter_type == "recommendations":
         user = supabase_client.table("users").select("tags").eq("id", user_id).execute().data
-        if not user or not user[0].get("tags"):
-            return {'msg': 'You need tags to get recommendations', "events": []}
+        user_tags = user[0]["tags"]
+        if not user or not user_tags:
+            return {'error': 'Выберите тэги в профиле', "events": []}
 
         user_tags = user[0]["tags"]
         if not isinstance(user_tags, list) or len(user_tags) == 0:
-            return {'msg': 'You need tags to get recommendations', "events": []}
+            return {'error': 'Выберите тэги в профиле', "events": []}
 
         events = supabase_client.table("events") \
             .select("id, title, description, location, start_timestamptz, end_timestamptz, tags, image") \
@@ -58,7 +59,9 @@ def get_filtered_events(
     elif filter_type == "friends":
         friend_pairs = supabase_client.table("friends").select("sender_id, recipient_id").or_(
             f"sender_id.eq.{user_id},recipient_id.eq.{user_id}").eq("status", True).execute().data
+
         friend_ids = set()
+
         for pair in friend_pairs:
             if pair["sender_id"] == user_id:
                 friend_ids.add(pair["recipient_id"])
@@ -66,12 +69,16 @@ def get_filtered_events(
                 friend_ids.add(pair["sender_id"])
         if not friend_ids:
             return {"events": []}
+
         events = supabase_client.table("events").select(
-            "id, title, description, location, start_timestamptz, end_timestamptz, tags, image, participants").limit(
+            "id, title, description, location, start_timestamptz, end_timestamptz, tags, image, participants, organizer:sponsor_id(id, first_name, last_name, avatar_url)").limit(
             50).execute().data
+
         filtered_events = []
         for event in events:
+
             participants = event.get("participants") or []
+
             participating_friends = list(set(participants) & friend_ids)
             if participating_friends:
                 friends_info = (supabase_client.table("users").select("id, first_name, last_name, avatar_url")
@@ -81,7 +88,7 @@ def get_filtered_events(
         return {"events": filtered_events[:20]}
 
     elif filter_type == "groups":
-        return {"msg": "Фильтр по группам ещё не реализован"}
+        return {"error": "Фильтр по группам ещё не реализован"}
 
     else:
         raise HTTPException(status_code=400, detail="Unknown filter type")
@@ -91,15 +98,14 @@ def get_filtered_events(
 def get_event(event_id: int, user_id: int = Depends(get_current_user_id)):
     event = supabase_client.table("events").select("*",
                                                    "organizer:sponsor_id(id, first_name, last_name, avatar_url)").eq(
-        "id", event_id).execute().data
-
+        "id", event_id).execute().data[0]
     if not event:
         raise HTTPException(status_code=404, detail="Event not found")
 
     return {'event': event}
 
 
-@events_router.get('/{event_id}/participants')
+@events_router.get('/events/{event_id}/participants')
 def get_event_participants(event_id: int, user_id: int = Depends(get_current_user_id)):
     try:
         response = supabase_client.table('events').select('participants').eq('id', event_id).single().execute()
