@@ -34,8 +34,9 @@ export default function FriendsMenu({id, friendsData, requestsData}: Props) {
     const [searchQuery, setSearchQuery] = useState('');
     const [friends, setFriends] = useState<Friend[]>(friendsData);
     const [friendRequests, setFriendRequests] = useState<FriendRequest[]>(requestsData);
+    const [loading, setLoading] = useState<{ [key: string]: boolean }>({});
 
-    const {userID} = useUser()
+    const {userID} = useUser();
 
     const filteredFriends = useMemo(() =>
         friends.filter(friend =>
@@ -48,55 +49,76 @@ export default function FriendsMenu({id, friendsData, requestsData}: Props) {
         ), [friendRequests, searchQuery]);
 
     const handleDeleteFriend = async (id: string) => {
+        if (loading[id]) return; // Prevent multiple clicks on the same button
+
+        setLoading(prev => ({...prev, [id]: true}));
+
         try {
             const success = await deleteFriend(id);
             if (success) {
-                toast.success('Успех')
+                toast.success('Успех');
+                setFriends(friends.filter(friend => friend.id !== id));
             } else {
                 toast.error("Не удалось удалить друга. Пожалуйста, попробуйте позже.");
             }
         } catch (error) {
             toast.error("Произошла ошибка");
-            toast.error(`${error}`)
+            toast.error(`${error}`);
+        } finally {
+            setLoading(prev => ({...prev, [id]: false}));
         }
     };
 
-
     const handleAcceptRequest = async (id: string) => {
+        if (loading[id]) return; // Prevent multiple clicks on the same button
+
+        setLoading(prev => ({...prev, [id]: true}));
+
         try {
             const success = await acceptRequest(id);
             if (success) {
-                toast.success('Успех')
+                toast.success('Заявка принята');
+                // Optionally, remove the request from UI after acceptance
+                setFriendRequests(friendRequests.filter(request => request.id !== id));
             } else {
                 toast.error("Не удалось принять заявку. Пожалуйста, попробуйте позже.");
             }
         } catch (error) {
             toast.error("Произошла ошибка");
-            toast.error(`${error}`)
-
+            toast.error(`${error}`);
+        } finally {
+            setLoading(prev => ({...prev, [id]: false}));
         }
     };
 
     const handleRejectRequest = async (id: string) => {
+        if (loading[id]) return; // Prevent multiple clicks on the same button
+
+        setLoading(prev => ({...prev, [id]: true}));
+
         try {
             const success = await rejectRequest(id);
-            toast.success('Идет запрос')
             if (success) {
-                toast.success('Успех')
+                toast.success('Заявка отклонена');
+                // Optionally, remove the request from UI after rejection
+                setFriendRequests(friendRequests.filter(request => request.id !== id));
             } else {
                 toast.error("Не удалось отклонить заявку. Пожалуйста, попробуйте позже.");
             }
         } catch (error) {
             toast.error("Произошла ошибка");
-            toast.error(`${error}`)
+            toast.error(`${error}`);
+        } finally {
+            setLoading(prev => ({...prev, [id]: false}));
         }
     };
 
     const router = useRouter();
 
     const handleRedirect = (id: string) => {
-        router.push(`/profile/${id}`)
+        router.push(`/profile/${id}`);
     };
+
     return (
         <div className="bg-white rounded-3xl shadow-sm border border-gray-100 p-4">
             {/* Заголовок */}
@@ -151,13 +173,13 @@ export default function FriendsMenu({id, friendsData, requestsData}: Props) {
                                 </div>
                                 {userID === id && (<button
                                     onClick={() => handleDeleteFriend(friend.id)}
+                                    disabled={loading[friend.id]}
                                     className="text-emerald-600 hover:cursor-pointer hover:text-emerald-900 flex items-center text-sm active:scale-90 duration-100"
                                 >
                                     <FiUserX className="mr-1"/>
-                                    Удалить
+                                    {loading[friend.id] ? 'Удаление...' : 'Удалить'}
                                 </button>)}
                             </div>
-
                         ))
                     ) : (
                         <p className="text-center text-gray-500 py-4">
@@ -185,12 +207,14 @@ export default function FriendsMenu({id, friendsData, requestsData}: Props) {
                                 <div className="flex space-x-2">
                                     <button
                                         onClick={() => handleAcceptRequest(request.id)}
+                                        disabled={loading[request.id]}
                                         className="px-4 py-1 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 text-sm hover:cursor-pointer"
                                     >
                                         <GrCheckmark/>
                                     </button>
                                     <button
                                         onClick={() => handleRejectRequest(request.id)}
+                                        disabled={loading[request.id]}
                                         className="px-4 py-1 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 text-sm hover:cursor-pointer"
                                     >
                                         <RxCross1/>

@@ -32,7 +32,6 @@ export default function LoginPage() {
 
         try {
             const userExists = await checkUserExists(loginMethod, loginValue);
-            console.log(userExists)
             if (userExists) {
                 setStep('password');
             } else {
@@ -53,7 +52,7 @@ export default function LoginPage() {
         try {
             const userLogin = await checkLogin(loginMethod, loginValue, password);
             if (userLogin) {
-                router.push('/home');
+                router.push('/events');
             } else {
                 toast.error('Пользователь не найден.');
             }

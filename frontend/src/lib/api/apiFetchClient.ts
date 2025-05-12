@@ -3,7 +3,7 @@ function getToken(): string | null {
     return match ? match[1] : null;
 }
 
-export async function apiFetchClient(url: string, params: { method: string; body?: string }) {
+export async function apiFetchClient(url: string, params: { method: string; body?: object }) {
     const token = getToken()
     const apiUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
 
@@ -17,7 +17,8 @@ export async function apiFetchClient(url: string, params: { method: string; body
                 'Content-Type': 'application/json',
                 "Authorization": `Bearer ${token}`,
             },
-            ...params
+            method: params.method,
+            ...params.body
         });
 
         if (!response.ok) {

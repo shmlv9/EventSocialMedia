@@ -6,6 +6,7 @@ import {cookies} from "next/headers";
 import {redirect} from "next/navigation";
 import SettingButton from "@/components/profile/settings/SettingButton";
 import FriendButton from "@/components/profile/friends/FriendButton";
+import MyEvents from "@/components/profile/events/MyEvents";
 
 
 export default async function ProfilePage({params}: { params: { id: string } }) {
@@ -48,7 +49,7 @@ export default async function ProfilePage({params}: { params: { id: string } }) 
                     </div>
                     <div>
                         {String(userID) !== String(id) ?
-                            <FriendButton id={id} apiUrl={apiUrl ?? ''} token={token ?? ''} />
+                            <FriendButton id={id} apiUrl={apiUrl ?? ''} token={token ?? ''} status={userData.friendship_status} />
                             :
                             <SettingButton/>}
                     </div>
@@ -74,7 +75,7 @@ export default async function ProfilePage({params}: { params: { id: string } }) 
                         href={`/profile/${id}/friends`}
                         className="flex items-center space-x-1 text-emerald-600 hover:text-emerald-700 transition-colors"
                     >
-                        <span className="font-semibold">{userData.friendsCount || 0}</span>
+                        <span className="font-semibold">{userData.friends_count || 0}</span>
                         <span>друзей</span>
                         <FiChevronRight className="h-4 w-4"/>
                     </Link>
@@ -83,7 +84,7 @@ export default async function ProfilePage({params}: { params: { id: string } }) 
                         href={`/profile/${id}/groups`}
                         className="flex items-center space-x-1 text-emerald-600 hover:text-emerald-700 transition-colors"
                     >
-                        <span className="font-semibold">{userData.groupsCount || 0}</span>
+                        <span className="font-semibold">{userData.groups_count || 0}</span>
                         <span>групп</span>
                         <FiChevronRight className="h-4 w-4"/>
                     </Link>
@@ -99,8 +100,7 @@ export default async function ProfilePage({params}: { params: { id: string } }) 
                 <div className='mb-8 justify-center items-center flex flex-col'>
                     <h1 className='text-2xl font-bold text-gray-800 mb-4'>{String(userID) === String(id) ? 'Мои мероприятия' : 'Мероприятия'}</h1>
                     <div className='space-y-4'>
-
-                        Карточка
+                        <MyEvents id={id}/>
                     </div>
                 </div>
             </div>

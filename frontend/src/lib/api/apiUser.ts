@@ -1,5 +1,3 @@
-'use server'
-
 import {apiFetch} from "@/lib/api/apiFetch";
 
 export async function fetchID() {
@@ -23,10 +21,9 @@ export async function fetchProfile(id: string) {
 }
 
 export async function updateProfile(data: object) {
-    console.log(data)
     const response = await apiFetch('/user/profile/', {
         method: 'PATCH',
-        body: JSON.stringify(data),
+        body: {...data},
     })
     return response.ok;
 }

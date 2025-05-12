@@ -89,26 +89,74 @@ def get_filtered_events(
 
 @events_router.get("/{event_id}")
 def get_event(event_id: int, user_id: int = Depends(get_current_user_id)):
-    result = (supabase_client.table("events").select("*", "users:sponsor_id(id, first_name, last_name, avatar_url)")
-              .eq("id", event_id).execute().data)
+    event = supabase_client.table("events").select("*",
+                                                   "organizer:sponsor_id(id, first_name, last_name, avatar_url)").eq(
+        "id", event_id).execute().data
 
-    if not result:
+    if not event:
         raise HTTPException(status_code=404, detail="Event not found")
 
-    event = result[0]
+    return {'event': event}
 
-    return {
-        "title": event["title"],
-        "description": event["description"],
-        "location": event["location"],
-        "start": event["start_timestamptz"],
-        "end": event["end_timestamptz"],
-        "organizer": event["users"],
-        "tags": event.get("tags", []),
-        "participants_count": len(event.get("participants", [])),
-        "created_at": event["created_at"],
-        "image_url": event.get("image")
-    }
+
+@events_router.get('/{event_id}/participants')
+def get_event_participants(event_id: int, user_id: int = Depends(get_current_user_id)):
+    try:
+        response = supabase_client.table('events').select('participants').eq('id', event_id).single().execute()
+        event = response.data
+
+        if not event:
+            raise HTTPException(status_code=404, detail="Event not found")
+
+        return {"participants": event.get("participants", [])}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@events_router.delete('/{event_id}/participants')
+def leave_event_participants(event_id: int, user_id: int = Depends(get_current_user_id)):
+    try:
+        response = supabase_client.table('events').select('participants').eq('id', event_id).single().execute()
+        event = response.data
+
+        if not event:
+            raise HTTPException(status_code=404, detail="Event not found")
+
+        participants = event.get('participants') or []
+
+        if user_id not in participants:
+            raise HTTPException(status_code=409, detail="You are already left")
+
+        updated_participants = [uid for uid in participants if uid != user_id]
+
+        supabase_client.table('events').update({'participants': updated_participants}).eq('id', event_id).execute()
+
+        return {"message": "success"}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@events_router.post('/{event_id}/participants')
+def join_event_participants(event_id: int, user_id: int = Depends(get_current_user_id)):
+    try:
+        response = supabase_client.table('events').select('participants').eq('id', event_id).single().execute()
+        event = response.data
+
+        if not event:
+            raise HTTPException(status_code=404, detail="Event not found")
+
+        participants = event.get('participants') or []
+
+        if user_id in participants:
+            raise HTTPException(status_code=409, detail="You are already a participant")
+
+        participants.append(user_id)
+
+        supabase_client.table('events').update({'participants': participants}).eq('id', event_id).execute()
+
+        return {"message": "success"}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 
 @events_router.patch("/{event_id}")
@@ -125,29 +173,38 @@ def update_event(event_id: int, updated_data: dict, user_id: int = Depends(get_c
 
 @events_router.delete("/{event_id}")
 def delete_event(event_id: int, user_id: int = Depends(get_current_user_id)):
-    event = supabase_client.table("events").select("sponsor_id").eq("id", event_id).single().execute().data
-    if not event:
-        raise HTTPException(status_code=404, detail="Event not found")
-    if event["sponsor_id"] != user_id:
-        raise HTTPException(status_code=403, detail="You are not the organizer of this event")
-    supabase_client.table("events").delete().eq("id", event_id).execute()
-    return {"msg": "Event deleted successfully"}
+    try:
+        event = supabase_client.table("events").select("sponsor_id").eq("id", event_id).single().execute().data
+        if not event:
+            raise HTTPException(status_code=404, detail="Event not found")
+        if event["sponsor_id"] != user_id:
+            raise HTTPException(status_code=403, detail="You are not the organizer of this event")
+        supabase_client.table("events").delete().eq("d", event_id).execute()
+        return {"msg": "Event deleted successfully"}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 
-@events_router.get("/my/created")
-def get_my_created_events(user_id: int = Depends(get_current_user_id)):
-    events = supabase_client.table("events").select("id, title, "
-                                                    "description, "
-                                                    "start_timestamptz, end_timestamptz, "
-                                                    "location, image").eq("sponsor_id", user_id).execute().data
-    return {"events": events}
+@events_router.get("/user/{target_id}/created")
+def get_my_created_events(target_id: int, user_id: int = Depends(get_current_user_id)):
+    try:
+        events = (
+            supabase_client.table("events").select("*", "organizer:sponsor_id(id, first_name, last_name, avatar_url)")
+            .eq("sponsor_id", target_id).eq("sponsor_id", target_id).execute().data)
+
+        return {"events": events}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 
-@events_router.get("/my/participating")
-def get_my_participating_events(user_id: int = Depends(get_current_user_id)):
-    all_events = supabase_client.table("events").select("id, title, "
-                                                        "description, "
-                                                        "start_timestamptz, end_timestamptz, "
-                                                        "location, image, participants").execute().data
-    participating = [event for event in all_events if user_id in (event.get("participants") or [])]
-    return {"events": participating}
+@events_router.get("/user/{target_id}/participants")
+async def get_participating_events(
+        target_id: int,
+        user_id: int = Depends(get_current_user_id),
+):
+    response = supabase_client.table("events") \
+        .select("*", "organizer:sponsor_id(id, first_name, last_name, avatar_url)") \
+        .contains('participants', [str(target_id)]) \
+        .execute().data
+
+    return {"events": response}
