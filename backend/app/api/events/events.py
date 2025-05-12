@@ -11,6 +11,15 @@ events_router = APIRouter(
 )
 
 
+@events_router.get('/tags')
+async def get_tags(user_id: int = Depends(get_current_user_id)):
+    response = supabase_client.table("tags") \
+        .select("tag") \
+        .execute().data
+    tags = [item['tag'] for item in response]
+    return tags
+
+
 @events_router.post("")
 def create_event(event: EventCreateRequest, sponsor_id: int = Depends(get_current_user_id)):
     if event.start_timestamptz >= event.end_timestamptz:

@@ -28,8 +28,11 @@ class ProfileUpdateRequest(BaseModel):
     phone_number: str | None = None
     first_name: str | None = None
     last_name: str | None = None
+    bio: str | None = None
     city: str | None = None
     birthday: str | None = None
+    tags: List | None = None
+    avatar_url: str | None = None
 
 
 class EventCreateRequest(BaseModel):
@@ -40,3 +43,15 @@ class EventCreateRequest(BaseModel):
     end_timestamptz: datetime
     tags: List[str]
     image: Optional[str] = None
+
+
+class GroupCreate(BaseModel):
+    name: str
+    description: Optional[str] = None
+    tags: Optional[List[str]] = []
+
+
+class GroupUpdate(BaseModel):
+    name: Optional[str] = None
+    description: Optional[str] = None
+    tags: Optional[List[str]] = None
