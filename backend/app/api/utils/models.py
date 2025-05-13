@@ -48,10 +48,12 @@ class EventCreateRequest(BaseModel):
 class GroupCreate(BaseModel):
     name: str
     description: Optional[str] = None
-    tags: Optional[List[str]] = []
+    tags: Optional[List[str]] = None
+    avatar_url: Optional[str] = None
 
 
 class GroupUpdate(BaseModel):
     name: Optional[str] = None
     description: Optional[str] = None
+    avatar_url: Optional[str] = None
     tags: Optional[List[str]] = None

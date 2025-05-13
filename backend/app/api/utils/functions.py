@@ -1,7 +1,6 @@
 import hashlib
 from datetime import datetime, timedelta
-from typing import Optional
-from fastapi import HTTPException, Header, status, Cookie, Depends
+from fastapi import HTTPException, status, Depends
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from jose import jwt, JWTError
 from api.utils.supabase_client import supabase_client
@@ -51,3 +50,10 @@ def get_current_user_id(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Invalid or expired token",
         )
+
+
+def check_user_exists(user_id: int):
+    response = supabase_client.table("users").select("id").eq("id", user_id).execute()
+    if not response.data:
+        raise HTTPException(status_code=404, detail="User not found")
+
