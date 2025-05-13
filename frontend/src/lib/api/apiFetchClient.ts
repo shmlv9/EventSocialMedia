@@ -3,10 +3,9 @@ function getToken(): string | null {
     return match ? match[1] : null;
 }
 
-export async function apiFetchClient(url: string, params: { method: string; body?: object }) {
+export async function apiFetchClient(url: string, params: { method: string; body?: object | JSON }) {
     const token = getToken()
     const apiUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
-
     if (!token) {
         console.error('No token found')
         throw new Error('No token found');

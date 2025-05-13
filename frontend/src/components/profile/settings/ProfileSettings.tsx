@@ -4,8 +4,8 @@ import React, {useEffect, useState} from 'react'
 import {FiUser} from 'react-icons/fi'
 import {useUser} from "@/context/userContext";
 import {fetchProfileClient, updateProfile} from "@/lib/api/apiUser";
-import {DatePicker} from "@/components/ui/DatePicker";
 import toast from "react-hot-toast";
+import PrettyDatePicker from "@/components/ui/DateTimePicker/DatePick";
 
 type UserProfile = {
     first_name: string
@@ -56,6 +56,10 @@ export default function ProfileSettings() {
         loadProfile();
     }, [userID]);
 
+    const handleDateChange = (date: string) => {
+        setFormData(prev => ({...prev, ['birthday']: date}));
+    };
+
     const hasChanges = JSON.stringify(formData) !== JSON.stringify(originalData);
 
     async function handleSubmit(e: React.FormEvent) {
@@ -69,9 +73,6 @@ export default function ProfileSettings() {
         }
     }
 
-    function setDateBirth(date: string) {
-        setFormData(prev => ({...prev, ['birthday']: date}));
-    }
 
     function handleChange(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) {
         const {name, value} = e.target;
@@ -177,6 +178,13 @@ export default function ProfileSettings() {
                                 className="w-full px-4 py-2 border border-gray-300 rounded-3xl focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
                             />
                         </div>
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-2">Дата рождения</label>
+                            <PrettyDatePicker
+                                value={formData.birthday}
+                                onChange={handleDateChange}
+                            />
+                        </div>
                     </div>
 
                     <div className="mb-6">
@@ -191,10 +199,6 @@ export default function ProfileSettings() {
                         />
                     </div>
 
-                    <div className="mb-6">
-                        <DatePicker selectedDate={formData.birthday ?? ""}
-                                    onChange={(date) => setDateBirth(date)}></DatePicker>
-                    </div>
 
                     <div className="flex justify-between">
                         <button

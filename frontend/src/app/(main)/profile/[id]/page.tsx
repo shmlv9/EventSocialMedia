@@ -10,7 +10,7 @@ import MyEvents from "@/components/profile/events/MyEvents";
 
 
 export default async function ProfilePage({params}: { params: { id: string } }) {
-    const {id} = params;
+    const {id} = await params;
     const apiUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
     const userData = await fetchProfile(id);
 

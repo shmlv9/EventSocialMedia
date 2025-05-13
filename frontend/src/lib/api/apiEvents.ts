@@ -9,7 +9,28 @@ export async function fetchEvents(filter: string) {
 }
 
 export async function fetchEvent(id: string) {
-        const response = await apiFetch(`/events/${id}`, {
+    const response = await apiFetch(`/events/${id}`, {
+        method: 'GET',
+    })
+    return response.json();
+}
+
+export async function updateEvent(id: string, data: object) {
+    console.log(id)
+    console.log(data)
+    return true
+}
+
+export async function deleteEvent(id: string) {
+    const response = await apiFetchClient(`/events/${id}`, {
+        method: 'DELETE',
+    })
+    return response.ok;
+}
+
+
+export async function fetchEventClient(id: string) {
+    const response = await apiFetchClient(`/events/${id}`, {
         method: 'GET',
     })
     return response.json();
@@ -41,4 +62,14 @@ export async function leaveEvent(id: string) {
         method: 'DELETE'
     });
     return response.ok
+}
+
+export async function createEvent(data: object) {
+    const response = await apiFetchClient('/events', {
+        method: 'POST',
+        body: {
+            body: JSON.stringify(data)
+        }
+    });
+    return response.ok;
 }

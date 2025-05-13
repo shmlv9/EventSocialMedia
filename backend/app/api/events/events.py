@@ -105,13 +105,16 @@ def get_filtered_events(
 
 @events_router.get("/{event_id}")
 def get_event(event_id: int, user_id: int = Depends(get_current_user_id)):
-    event = supabase_client.table("events").select("*",
-                                                   "organizer:sponsor_id(id, first_name, last_name, avatar_url)").eq(
-        "id", event_id).execute().data[0]
-    if not event:
-        raise HTTPException(status_code=404, detail="Event not found")
+    try:
+        event = supabase_client.table("events").select("*",
+                                                       "organizer:sponsor_id(id, first_name, last_name, avatar_url)").eq(
+            "id", event_id).execute().data[0]
+        if not event:
+            raise HTTPException(status_code=404, detail="Event not found")
 
-    return {'event': event}
+        return {'event': event}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 
 @events_router.get('/events/{event_id}/participants')
@@ -194,7 +197,7 @@ def delete_event(event_id: int, user_id: int = Depends(get_current_user_id)):
             raise HTTPException(status_code=404, detail="Event not found")
         if event["sponsor_id"] != user_id:
             raise HTTPException(status_code=403, detail="You are not the organizer of this event")
-        supabase_client.table("events").delete().eq("d", event_id).execute()
+        supabase_client.table("events").delete().eq("id", event_id).execute()
         return {"msg": "Event deleted successfully"}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))

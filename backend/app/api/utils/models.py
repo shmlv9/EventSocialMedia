@@ -42,7 +42,6 @@ class EventCreateRequest(BaseModel):
     start_timestamptz: datetime
     end_timestamptz: datetime
     tags: List[str]
-    image: Optional[str] = None
 
 
 class GroupCreate(BaseModel):

@@ -5,6 +5,7 @@ import DescriptionMenu from "@/components/events/EventCard/DescriptionMenu";
 import {useUser} from "@/context/userContext";
 import Link from "next/link";
 import {useState} from "react";
+import {MdModeEdit} from "react-icons/md";
 
 type Participant = {
     id: number;
@@ -57,7 +58,6 @@ export default function EventCard(event: Event) {
     const friendsCount = event.friends_participants?.length || 0;
     const isJoined: boolean = event.participants.includes(Number(userID));
 
-
     return (
         <div
             className="bg-white rounded-3xl shadow-sm overflow-hidden border border-gray-100 hover:shadow-[0_4px_16px_0_rgba(16,185,129,0.15)] transition-shadow mb-6 max-w-xl">
@@ -66,20 +66,23 @@ export default function EventCard(event: Event) {
                     <img src={event.image} className="w-full h-full object-cover" alt={event.title}/>
                 ) : (
                     <div className="flex items-center justify-center h-full">
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-16 w-16 text-emerald-300" fill="none"
-                             viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5}
-                                  d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
-                        </svg>
+
                     </div>
                 )}
+
+                {userID === event.organizer.id.toString() && <Link
+                    href={`/events/${event.id}/edit`}
+                    className="absolute top-3 right-3 p-2 bg-white rounded-full shadow-md hover:bg-gray-100 transition-colors"
+                >
+                    <MdModeEdit/>
+                </Link>}
             </div>
 
             <div className="p-5">
                 <div className="flex justify-between items-start mb-3">
                     <div>
-                        <Link className="text-xl font-bold text-gray-800 mb-1" href={`/events/${event.id}`}>{event.title}</Link>
-
+                        <Link className="text-xl font-bold text-gray-800 mb-1"
+                              href={`/events/${event.id}`}>{event.title}</Link>
 
                         <div className="flex flex-wrap gap-x-4 gap-y-2 mb-2">
                             <div className="flex items-center text-sm text-emerald-600">
