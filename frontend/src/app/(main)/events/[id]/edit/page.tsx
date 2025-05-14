@@ -6,6 +6,7 @@ import TagSelect from "@/components/ui/TagSelect";
 import {FaSave} from "react-icons/fa";
 import {useRouter} from "next/navigation";
 import toast from "react-hot-toast";
+import {useUser} from "@/context/userContext";
 
 type Participant = {
     id: number;
@@ -46,6 +47,8 @@ export default function EditEvent({params}: { params: Promise<{ id: string }> })
     const {id} = React.use(params);
     const router = useRouter();
 
+    const [loading, setLoading] = useState<boolean>(false)
+
     const [event, setEvent] = useState<Event | null>(null);
     const [formData, setFormData] = useState<EventFormData>({
         title: '',
@@ -53,6 +56,8 @@ export default function EditEvent({params}: { params: Promise<{ id: string }> })
         location: '',
         tags: [],
     });
+
+    const {userID} = useUser()
 
     const [start_timestamptz, setStart_timestamptz] = useState<Date | null>(null);
     const [end_timestamptz, setEnd_timestamptz] = useState<Date | null>(null);
@@ -62,9 +67,14 @@ export default function EditEvent({params}: { params: Promise<{ id: string }> })
     useEffect(() => {
         async function fetchEventData() {
             try {
+                setLoading(true)
                 const response = await fetchEventClient(id);
-
+                if (!response) {
+                    toast.error('Не удалось загрузить данные события');
+                    return (<div>Мероприятие не найдено</div>)
+                }
                 if (response.event) {
+                    setEvent(response.event)
                     setFormData({
                         title: response.event.title,
                         description: response.event.description,
@@ -73,6 +83,7 @@ export default function EditEvent({params}: { params: Promise<{ id: string }> })
                     });
                     setStart_timestamptz(new Date(response.event.start_timestamptz));
                     setEnd_timestamptz(new Date(response.event.end_timestamptz));
+                    setLoading(false)
                 }
 
             } catch (error) {
@@ -145,13 +156,15 @@ export default function EditEvent({params}: { params: Promise<{ id: string }> })
         }
     };
 
-    if (!event) {
+    if (loading) {
         return <div className="flex justify-center items-center py-10">Загрузка данных события...</div>;
     }
 
+
     return (
         <div className="flex justify-center items-center py-10 px-4">
-            <div className="w-full max-w-2xl bg-white shadow-lg rounded-3xl p-8 space-y-6">
+            {userID !== event?.organizer.id.toString() && 'Данное мероприятие не является вашим'}
+            {!!event && userID === event?.organizer.id.toString() && <div className="w-full max-w-2xl bg-white shadow-lg rounded-3xl p-8 space-y-6">
                 <h2 className="text-2xl font-semibold text-gray-800">Редактирование мероприятия</h2>
 
                 <div className="space-y-6">
@@ -250,7 +263,7 @@ export default function EditEvent({params}: { params: Promise<{ id: string }> })
                         </button>
                     </div>
                 </div>
-            </div>
+            </div>}
         </div>
     );
 };

@@ -25,6 +25,7 @@ export async function deleteEvent(id: string) {
     const response = await apiFetchClient(`/events/${id}`, {
         method: 'DELETE',
     })
+    if (!response.ok) return null
     return response.ok;
 }
 

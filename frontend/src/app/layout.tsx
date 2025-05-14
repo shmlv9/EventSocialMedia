@@ -13,7 +13,7 @@ export default function RootLayout({children,}: Readonly<{ children: React.React
     return (
         <html lang="en">
         <body className='bg-gray-50'>
-        <div className="container h-full mx-auto">
+        <div>
             <Toaster
                 position="top-center"
                 toastOptions={{

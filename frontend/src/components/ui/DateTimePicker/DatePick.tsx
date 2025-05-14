@@ -25,7 +25,7 @@ export default function PrettyDatePicker({ value, onChange, label }: Props) {
     const handleChange = (date: Date | null) => {
         setSelectedDate(date);
         if (date) {
-            const formatted = format(date, 'dd-MM-yyyy');
+            const formatted = format(date, 'yyyy-MM-dd');
             onChange(formatted);
         }
     };

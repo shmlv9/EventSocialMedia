@@ -32,9 +32,11 @@ export async function fetchProfileClient(id: string) {
 }
 
 export async function updateProfile(data: object) {
-    const response = await apiFetch('/user/profile/', {
+    const response = await apiFetchClient('/user/profile/', {
         method: 'PATCH',
-        body: {...data},
+                body: {
+            body: JSON.stringify(data)
+        }
     })
     return response.ok;
 }

@@ -7,7 +7,7 @@ import 'react-datepicker/dist/react-datepicker.css';
   import './custom-datepicker.css';
 
 type Props = {
-  value?: Date;
+  value?: Date | null;
   onChange: (utcDate: Date) => void;
   label?: string;
 };
