@@ -56,7 +56,7 @@ export default function PrettyDatePicker({ value, onChange, label, disabled = fa
           maxDate={maxDate}
           className={`
             w-full pl-10 pr-4 py-2.5 rounded-xl border
-            ${disabled ? 'border-gray-200 bg-gray-50' : 'border-gray-300 bg-white'}
+            ${disabled ? 'border-gray-200 bg-gray-50' : 'border-gray-300 '}
             ${disabled ? 'text-gray-400' : 'text-gray-900'} placeholder-gray-400
             focus:ring-2 focus:ring-lime-500 focus:border-transparent
             ${disabled ? '' : 'hover:border-gray-400'} transition-all

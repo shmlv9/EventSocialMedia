@@ -13,14 +13,14 @@ type Friend = {
     id: string;
     last_name: string;
     first_name: string;
-    avatar: string;
+    avatar_url: string;
 };
 
 type FriendRequest = {
     id: string;
     last_name: string;
     first_name: string;
-    avatar: string;
+    avatar_url: string;
 };
 
 type Props = {
@@ -158,9 +158,9 @@ export default function FriendsMenu({id, friendsData, requestsData}: Props) {
                             <div key={friend.id || index} className="flex items-center justify-between p-4 hover:bg-gray-50 rounded-3xl transition">
                                 <div className="flex items-center hover:cursor-pointer gap-3"
                                      onClick={() => handleRedirect(friend.id)}>
-                                    {friend.avatar ? (
+                                    {friend.avatar_url ? (
                                         <img
-                                            src={friend.avatar}
+                                            src={friend.avatar_url}
                                             alt={friend.last_name}
                                             className="w-12 h-12 rounded-full border-2 border-white shadow-sm"
                                         />
@@ -203,9 +203,9 @@ export default function FriendsMenu({id, friendsData, requestsData}: Props) {
                             <div key={request.id || index} className="flex items-center justify-between p-4 hover:bg-gray-50 rounded-3xl transition">
                                 <div className="flex items-center hover:cursor-pointer gap-3"
                                      onClick={() => handleRedirect(request.id)}>
-                                    {request.avatar ? (
+                                    {request.avatar_url ? (
                                         <img
-                                            src={request.avatar}
+                                            src={request.avatar_url}
                                             alt={request.last_name}
                                             className="w-12 h-12 rounded-full border-2 border-white shadow-sm"
                                         />

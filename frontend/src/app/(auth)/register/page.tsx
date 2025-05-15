@@ -13,7 +13,7 @@ export default function RegisterPage() {
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
     const [password, setPassword] = useState('');
-    const [birthDate, setBirthDate] = useState<string | null>(null);
+    const [birthDate, setBirthDate] = useState<string>('');
     const [isLoading, setIsLoading] = useState(false);
 
     const router = useRouter();
@@ -47,14 +47,14 @@ export default function RegisterPage() {
     };
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4 py-8">
-            <div className="w-full max-w-md bg-white rounded-2xl shadow-lg border border-gray-200 overflow-hidden">
+        <div className="min-h-screen flex items-center justify-center px-4 py-8">
+            <div className="w-full max-w-md bg-white rounded-3xl shadow-lg border border-gray-200 overflow-hidden">
 
-                    <h1 className="text-2xl font-bold pt-7 text-black text-center">Регистрация</h1>
+                    <h1 className="text-2xl font-bold pt-5 text-black text-center">Регистрация</h1>
 
 
                 <div className="p-6 space-y-5">
-                    <p className="text-gray-600 text-center mb-2">Создайте аккаунт для участия в событиях</p>
+                    <p className="text-gray-600 text-center mb-5">Создайте аккаунт для участия в событиях</p>
 
                     <div className="grid grid-cols-2 gap-4">
                         <div>
@@ -63,7 +63,7 @@ export default function RegisterPage() {
                                 type="text"
                                 value={firstName}
                                 onChange={(e) => setFirstName(e.target.value)}
-                                className="w-full px-4 py-3 rounded-lg bg-gray-100 text-gray-800 focus:outline-none focus:ring-2 focus:ring-lime-400 transition"
+                                className="w-full px-4 py-3 rounded-3xl bg-gray-100 text-gray-800 focus:outline-none focus:ring-2 focus:ring-lime-400 transition"
                                 placeholder="Ваше имя"
                                 required
                             />
@@ -75,7 +75,7 @@ export default function RegisterPage() {
                                 type="text"
                                 value={lastName}
                                 onChange={(e) => setLastName(e.target.value)}
-                                className="w-full px-4 py-3 rounded-lg bg-gray-100 text-gray-800 focus:outline-none focus:ring-2 focus:ring-lime-400 transition"
+                                className="w-full px-4 py-3 rounded-3xl bg-gray-100 text-gray-800 focus:outline-none focus:ring-2 focus:ring-lime-400 transition"
                                 placeholder="Ваша фамилия"
                             />
                         </div>
@@ -87,7 +87,7 @@ export default function RegisterPage() {
                             type="email"
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
-                            className="w-full px-4 py-3 rounded-lg bg-gray-100 text-gray-800 focus:outline-none focus:ring-2 focus:ring-lime-400 transition"
+                            className="w-full px-4 py-3 rounded-3xl bg-gray-100 text-gray-800 focus:outline-none focus:ring-2 focus:ring-lime-400 transition"
                             placeholder="you@example.com"
                             required
                         />
@@ -99,7 +99,7 @@ export default function RegisterPage() {
                             type="tel"
                             value={phone}
                             onChange={(e) => setPhone(e.target.value)}
-                            className="w-full px-4 py-3 rounded-lg bg-gray-100 text-gray-800 focus:outline-none focus:ring-2 focus:ring-lime-400 transition"
+                            className="w-full px-4 py-3 rounded-3xl bg-gray-100 text-gray-800 focus:outline-none focus:ring-2 focus:ring-lime-400 transition"
                             placeholder="+7 (999) 123-45-67"
                             required
                         />
@@ -111,7 +111,7 @@ export default function RegisterPage() {
                             type="password"
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
-                            className="w-full px-4 py-3 rounded-lg bg-gray-100 text-gray-800 focus:outline-none focus:ring-2 focus:ring-lime-400 transition"
+                            className="w-full px-4 py-3 rounded-3xl bg-gray-100 text-gray-800 focus:outline-none focus:ring-2 focus:ring-lime-400 transition"
                             placeholder="Не менее 6 символов"
                             minLength={6}
                             required
@@ -121,16 +121,15 @@ export default function RegisterPage() {
                     <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">Дата рождения*</label>
                         <PrettyDatePicker
-                            selectedDate={birthDate}
+                            value={birthDate}
                             onChange={setBirthDate}
-                            className="w-full px-4 py-3 rounded-lg bg-gray-100 text-gray-800 focus:outline-none focus:ring-2 focus:ring-lime-400"
                         />
                     </div>
 
                     <button
                         onClick={handleSubmit}
                         disabled={isLoading}
-                        className="w-full bg-lime-400 text-black font-bold py-3 rounded-lg hover:bg-lime-300 transition flex items-center justify-center mt-4"
+                        className="w-full bg-lime-400 text-black font-bold py-3 rounded-3xl hover:bg-lime-300 transition flex items-center justify-center mt-4"
                     >
                         {isLoading ? (
                             <>

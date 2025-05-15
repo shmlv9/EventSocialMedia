@@ -146,8 +146,6 @@ export default function EditEvent({ params }: { params: { id: string } }) {
     const handleDelete = async () => {
         if (!event) return
 
-        if (!confirm('Вы уверены, что хотите удалить мероприятие?')) return
-
         try {
             const response = await deleteEvent(event.id.toString())
             if (response) {
@@ -280,7 +278,7 @@ export default function EditEvent({ params }: { params: { id: string } }) {
                             type="button"
                             onClick={handleDelete}
                             disabled={isSubmitting}
-                            className="px-5 py-3 text-pink-500 border border-pink-300 rounded-2xl hover:bg-pink-50 transition-colors flex items-center justify-center gap-2"
+                            className="px-5 py-3 text-black bg-blue-600 rounded-2xl hover:bg-blue-500 flex items-center justify-center gap-2"
                         >
                             <FaTrash />
                             Удалить

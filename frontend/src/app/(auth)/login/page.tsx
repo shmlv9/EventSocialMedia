@@ -58,7 +58,7 @@ export default function LoginPage() {
 
     return (
         <div className="min-h-screen flex items-center justify-center px-4">
-            <div className="w-full max-w-md p-8 bg-white rounded-2xl shadow-lg border border-gray-200">
+            <div className="w-full max-w-md p-8 bg-white rounded-3xl shadow-lg border border-gray-200">
                 {/* Логотип и заголовок */}
                 <div className="text-center mb-6">
                     <div className="text-3xl font-bold text-black mb-1">
@@ -83,13 +83,13 @@ export default function LoginPage() {
                                     value={loginValue}
                                     onChange={(e) => setLoginValue(e.target.value)}
                                     placeholder={loginMethod === 'email' ? 'your@email.com' : '+7 (999) 123-45-67'}
-                                    className="w-full px-4 py-3 rounded-lg bg-gray-100 text-gray-800 focus:outline-none focus:ring-2 focus:ring-lime-400 transition"
+                                    className="w-full px-4 py-3 rounded-3xl bg-gray-100 text-gray-800 focus:outline-none focus:ring-2 focus:ring-lime-400 transition"
                                 />
                             </div>
                             <button
                                 onClick={handleCheckUser}
                                 disabled={isLoading}
-                                className="w-full bg-lime-400 text-black font-bold py-3 rounded-lg hover:bg-lime-300 transition flex items-center justify-center"
+                                className="w-full bg-lime-400 text-black font-bold py-3 rounded-3xl hover:bg-lime-300 transition flex items-center justify-center"
                             >
                                 {isLoading ? (
                                     <span className="flex items-center">
@@ -116,7 +116,7 @@ export default function LoginPage() {
                                     value={password}
                                     onChange={(e) => setPassword(e.target.value)}
                                     placeholder="••••••••"
-                                    className="w-full px-4 py-3 rounded-lg bg-gray-100 text-gray-800 focus:outline-none focus:ring-2 focus:ring-lime-400 pr-10 transition"
+                                    className="w-full px-4 py-3 rounded-3xl bg-gray-100 text-gray-800 focus:outline-none focus:ring-2 focus:ring-lime-400 pr-10 transition"
                                 />
                                 <button
                                     type="button"
@@ -139,7 +139,7 @@ export default function LoginPage() {
                             <button
                                 onClick={handleLogin}
                                 disabled={isLoading}
-                                className="w-full bg-lime-400 text-black font-bold py-3 rounded-lg hover:bg-lime-300 transition flex items-center justify-center"
+                                className="w-full bg-lime-400 text-black font-bold py-3 rounded-3xl  hover:bg-lime-300 transition flex items-center justify-center"
                             >
                                 {isLoading ? (
                                     <span className="flex items-center">

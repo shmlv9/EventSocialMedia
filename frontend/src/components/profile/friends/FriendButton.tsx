@@ -74,7 +74,7 @@ export default function FriendButton({ id, apiUrl, token, status }: Props) {
             {status === 'in_friends' && (
                 <button
                     disabled
-                    className="flex items-center gap-2 bg-neutral-800 p-2 rounded-2xl text-white border border-pink-500 cursor-not-allowed"
+                    className="flex items-center gap-2 bg-neutral-800 p-2 rounded-2xl text-white cursor-not-allowed"
                 >
                     <FaCheck className="text-lime-400" />
                     В друзьях
@@ -87,7 +87,7 @@ export default function FriendButton({ id, apiUrl, token, status }: Props) {
                     disabled={loading || buttonState}
                     className={`flex items-center gap-2 p-2 rounded-2xl text-white border ${
                         buttonState
-                            ? 'bg-neutral-800 border-pink-500 cursor-not-allowed'
+                            ? 'bg-neutral-800 cursor-not-allowed'
                             : 'bg-lime-400 border-lime-400 text-black hover:bg-lime-300 transition'
                     }`}
                 >
@@ -99,7 +99,7 @@ export default function FriendButton({ id, apiUrl, token, status }: Props) {
             {status === 'application_sent' && (
                 <button
                     disabled
-                    className="flex items-center gap-2 bg-neutral-800 p-2 rounded-2xl text-white border border-pink-500 cursor-not-allowed"
+                    className="flex items-center gap-2 bg-neutral-800 p-2 rounded-2xl text-white cursor-not-allowed"
                 >
                     <FaClock className="text-pink-400" />
                     Заявка отправлена
@@ -118,7 +118,7 @@ export default function FriendButton({ id, apiUrl, token, status }: Props) {
                     <button
                         onClick={handleReject}
                         disabled={loading}
-                        className="flex items-center gap-2 bg-neutral-800 p-2 rounded-2xl text-white border border-pink-500 hover:bg-neutral-700 transition"
+                        className="flex items-center gap-2 bg-neutral-800 p-2 rounded-2xl text-white 0 hover:bg-neutral-700 transition"
                     >
                         Отклонить
                     </button>

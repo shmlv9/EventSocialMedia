@@ -24,7 +24,6 @@ export default async function ProfilePage({params}: { params: { id: string } }) 
     if (!userData) {
         return <div className="text-black">Пользователь не найден</div>;
     }
-
     return (
         <div className="min-h-screen bg-white">
             {/* Шапка профиля */}
@@ -32,7 +31,7 @@ export default async function ProfilePage({params}: { params: { id: string } }) 
                 <div className="absolute bottom-0 left-6 transform translate-y-1/2">
                     <div className="relative">
                         <img
-                            src={userData.avatar}
+                            src={userData.avatar_url}
                             alt="Аватар"
                             className="w-24 h-24 md:w-32 md:h-32 rounded-full border-4 border-white bg-white"
                         />
@@ -99,8 +98,8 @@ export default async function ProfilePage({params}: { params: { id: string } }) 
             </div>
 
             {/* Мероприятия */}
-            <div className="bg-gray-50 rounded-3xl">
-                <h1 className="text-2xl font-bold text-black mb-6 text-center pt-4">
+            <div className="rounded-3xl">
+                <h1 className="text-2xl font-bold text-black mb-6 text-center pt-6">
                     {String(userID) === String(id) ? 'Мои мероприятия' : 'Мероприятия'}
                 </h1>
                 <div className="space-y-4 w-full mb-5">
