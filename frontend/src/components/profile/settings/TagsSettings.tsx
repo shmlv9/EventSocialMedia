@@ -47,15 +47,17 @@ export default function TagSelector() {
 
     useEffect(() => {
     async function loadProfile() {
-      const profile = await fetchProfileClient(userID)
-      setSelectedTags(profile.tags)
+      const profile = await fetchProfileClient(userID);
+      if (profile.tags) {
+          setSelectedTags(profile.tags)
+      }
     }
 
     loadProfile()
   }, [userID])
     return (
         <div className="p-6 rounded-2xl">
-            <h2 className="text-xl font-bold text-white mb-4">Выберите интересующие теги</h2>
+            <h2 className="text-xl font-bold text-black mb-4">Выберите интересующие теги</h2>
             <p className="text-gray-400 mb-6">Можно выбрать несколько вариантов</p>
 
             <div className="flex flex-wrap gap-3 mb-6">
@@ -66,8 +68,8 @@ export default function TagSelector() {
                         onClick={() => toggleTagSelection(tag)}
                         className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
                             selectedTags.includes(tag)
-                                ? 'bg-lime-400 text-black'
-                                : 'bg-neutral-800 text-gray-300 hover:bg-neutral-700'
+                                ? 'bg-blue-600 text-black'
+                                : 'bg-gray-200 text-black hover:bg-gray-300'
                         }`}
                     >
                         {tag}

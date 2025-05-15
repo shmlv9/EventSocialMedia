@@ -16,9 +16,14 @@ export async function fetchEvent(id: string) {
 }
 
 export async function updateEvent(id: string, data: object) {
-    console.log(id)
     console.log(data)
-    return true
+    const response = await apiFetchClient(`/events/${id}/`, {
+        method: 'PATCH',
+                body: {
+            body: JSON.stringify(data)
+        }
+    })
+    return response.ok;
 }
 
 export async function deleteEvent(id: string) {

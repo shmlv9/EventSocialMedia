@@ -10,7 +10,6 @@ import {MdExplore} from 'react-icons/md';
 
 const desktopNavLinks = [
     {href: '/events', icon: <FaHome/>, label: 'Главная'},
-    {href: '/messenger', icon: <FaComments/>, label: 'Сообщения'},
     {href: '/explore', icon: <MdExplore/>, label: 'Поиск'},
     {href: (userID: string) => `/profile/${userID}`, icon: <FaUser/>, label: 'Профиль'},
 ];
@@ -18,7 +17,6 @@ const desktopNavLinks = [
 
 const mobileNavLinks = [
     {href: '/events', icon: <FaHome/>, label: 'Главная'},
-    {href: '/messenger', icon: <FaComments/>, label: 'Сообщения'},
     {href: '/explore', icon: <MdExplore/>, label: 'Поиск'},
     {href: (userID: string) => `/profile/${userID}`, icon: <FaUser/>, label: 'Профиль'},
 ];
@@ -39,7 +37,9 @@ export default async function MainLayout({children}: { children: React.ReactNode
                     <div
                         className="hidden md:block fixed left-0 top-0 h-full w-64 bg-black shadow-xl z-10">
                         <div className="p-6 h-full flex flex-col">
-                            <div className="text-3xl font-extrabold tracking-tight text-white mb-8 text-center">Миротека</div>
+                            <div
+                                className="text-3xl font-extrabold tracking-tight text-white mb-8 text-center">Миротека
+                            </div>
                             <nav className="flex flex-col gap-3 flex-1">
                                 {desktopNavLinks.map(({href, icon, label}) => (
                                     <Link
@@ -64,9 +64,9 @@ export default async function MainLayout({children}: { children: React.ReactNode
                     </div>
 
                     {/* Основной контент */}
-                    <section className="flex-1 md:ml-64 p-4 md:p-8 overflow-y-auto bg-white">
+                    <section className="flex-1 md:ml-64 md:p-8 overflow-y-auto">
                         <div
-                            className="w-full max-w-5xl mx-auto rounded-3xl shadow-2xl p-6 md:">
+                            className="w-full max-w-5xl mx-auto rounded-3xl">
                             {children}
                         </div>
                     </section>

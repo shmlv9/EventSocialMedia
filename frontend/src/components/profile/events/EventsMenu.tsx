@@ -41,7 +41,7 @@ export default function EventsMenu({ organizedEvents, participatingEvents, id }:
         const events = selectedTab === 'organized' ? organizedEvents : participatingEvents;
 
         if (!events.length) {
-            return <p className="text-gray-400 text-center mt-6">Нет мероприятий для отображения</p>;
+            return <p className="text-gray-400 text-center pb-6 mt-6">Нет мероприятий для отображения</p>;
         }
 
         return (
@@ -54,15 +54,15 @@ export default function EventsMenu({ organizedEvents, participatingEvents, id }:
     };
 
     return (
-        <div className="p-6 rounded-3xl border border-pink-500">
+        <div className="rounded-3xl">
             {/* Tabs */}
-            <div className="flex justify-center gap-6 border-b border-neutral-700 mb-6 pb-2">
+            <div className="flex justify-center gap-6 border-neutral-700 mb-6 pb-2">
                 <button
                     onClick={() => setSelectedTab('organized')}
                     className={`py-2 px-6 text-sm font-medium rounded-full transition-colors duration-300 ${
                         selectedTab === 'organized'
-                            ? 'bg-lime-400 text-black border-lime-400'
-                            : 'text-gray-400 hover:text-lime-400 border border-transparent'
+                            ? 'bg-lime-400 text-black '
+                            : 'text-gray-400 hover:text-lime-400'
                     }`}
                 >
                     {isOwn ? 'Мои мероприятия' : 'Организует'}
@@ -71,7 +71,7 @@ export default function EventsMenu({ organizedEvents, participatingEvents, id }:
                     onClick={() => setSelectedTab('participating')}
                     className={`py-2 px-6 text-sm font-medium rounded-full transition-colors duration-300 ${
                         selectedTab === 'participating'
-                            ? 'bg-lime-400 text-black border-lime-400'
+                            ? 'bg-lime-400 text-black'
                             : 'text-gray-400 hover:text-lime-400 border border-transparent'
                     }`}
                 >

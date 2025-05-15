@@ -1,91 +1,110 @@
-.react-datepicker {
-  border: 1px solid #333;
-  border-radius: 1rem;
-  overflow: scroll;
-  font-family: inherit;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.6);
-  background-color: #111;
-  color: #f0f0f0;
+/* Базовые стили */
+.react-datepicker-custom {
+  font-family: 'Inter', -apple-system, sans-serif;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  background-color: white;
+  color: #111827;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+  width: 100%;
 }
 
+/* Мобильная адаптация */
+@media (max-width: 767px) {
+  .react-datepicker-custom {
+    position: fixed !important;
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%) !important;
+    width: 90vw !important;
+    max-width: 320px !important;
+    z-index: 1000 !important;
+  }
+
+  .react-datepicker__time-container {
+    width: 100% !important;
+    border-left: none !important;
+    border-top: 1px solid #e5e7eb !important;
+  }
+
+  .react-datepicker__time {
+    max-height: 200px !important;
+    overflow-y: auto !important;
+  }
+}
+
+/* Общие стили */
 .react-datepicker__header {
-  background-color: #1a1a1a;
-  border-bottom: 1px solid #333;
-  padding: 1rem;
+  background-color: #f9fafb;
+  border-bottom: 1px solid #e5e7eb;
+  border-radius: 12px 12px 0 0;
+  padding: 12px 8px;
 }
 
 .react-datepicker__current-month,
-.react-datepicker-time__header,
-.react-datepicker-year-header {
-  color: #a3e635;
+.react-datepicker-time__header {
+  color: #16a34a;
   font-weight: 600;
+  font-size: 0.875rem;
 }
 
 .react-datepicker__day,
 .react-datepicker__day-name {
-  color: #ffffff;
+  color: #111827;
+  font-size: 0.875rem;
+  margin: 0.2rem;
+  width: 1.9rem;
+  line-height: 1.9rem;
 }
 
-.react-datepicker__day--disabled {
-  color: #555 !important;
-}
-
+/* Выбранная дата */
 .react-datepicker__day--selected,
 .react-datepicker__day--keyboard-selected {
-  background-color: #a3e635 !important;
-  color: black !important;
-  border-radius: 0.5rem;
+  background-color: #16a34a !important;
+  color: white !important;
+  border-radius: 8px;
 }
 
-.react-datepicker__day:hover {
-  background-color: #bef264;
-  color: black;
-  border-radius: 0.5rem;
-}
-
-.react-datepicker__time-container .react-datepicker__time {
-  background-color: #1a1a1a;
-}
-
-.react-datepicker__time-container .react-datepicker__time .react-datepicker__time-box ul li.react-datepicker__time-list-item--selected {
-  background-color: #a3e635;
-  color: black;
-}
-
-.react-datepicker__triangle {
-  display: none;
-}
-
+/* Адаптация времени для мобилок */
 .react-datepicker__time-container {
-  border-left: 1px solid #333;
+  width: 110px;
 }
 
-.react-datepicker__time {
-  background-color: #1a1a1a;
-  border-radius: 0 1rem 1rem 0;
-  overflow: scroll;
-}
-
-.react-datepicker__time-box {
-  width: 100%;
+@media (max-width: 767px) {
+  .react-datepicker__time-container {
+    width: 100% !important;
+  }
 }
 
 .react-datepicker__time-list-item {
-  padding: 0.5rem 1rem;
-  cursor: pointer;
-  transition: background-color 0.2s ease;
-  border-radius: 0.5rem;
-  margin: 2px 4px;
-  color: #f0f0f0;
+  padding: 8px 10px;
+  white-space: nowrap;
 }
 
-.react-datepicker__time-list-item:hover {
-  background-color: #333;
-  color: #a3e635;
+/* Позиционирование попапа */
+.react-datepicker-popper {
+  z-index: 1000;
 }
 
-.react-datepicker__time-list-item--selected {
-  background-color: #a3e635 !important;
-  color: black !important;
-  font-weight: 500;
+.react-datepicker-popper[data-placement^="bottom"] {
+  padding-top: 8px;
+}
+
+/* Портал для мобильных */
+.react-datepicker-portal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 999;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.react-datepicker-portal .react-datepicker {
+  position: relative !important;
 }

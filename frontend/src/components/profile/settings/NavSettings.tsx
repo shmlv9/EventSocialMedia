@@ -1,55 +1,39 @@
 'use client'
 
-import React from 'react';
-import { FiLock, FiUser } from "react-icons/fi";
-import { AiOutlineTag } from "react-icons/ai";
+import {FiUser, FiTag} from "react-icons/fi";
 
-type Props = {
-    activeTab: string;
-    setActiveTab: React.Dispatch<React.SetStateAction<string>>;
-}
-
-export default function NavSettings({ activeTab, setActiveTab }: Props) {
-    const baseClass = "flex items-center w-full px-4 py-2 rounded-3xl transition-colors";
-    const iconClass = "text-lg mr-3";
-
+export default function NavSettings({
+                                        activeTab,
+                                        setActiveTab
+                                    }: {
+    activeTab: 'profile' | 'tags',
+    setActiveTab: (tab: 'profile' | 'tags') => void
+}) {
     return (
         <nav className="space-y-2">
             <button
                 onClick={() => setActiveTab('profile')}
-                className={`${baseClass} ${
+                className={`w-full flex items-center gap-3 px-4 py-3 rounded-3xl text-left transition-colors ${
                     activeTab === 'profile'
-                        ? 'bg-black text-lime-400 border border-lime-400'
-                        : 'text-white hover:text-lime-300 hover:bg-black/40 border border-white/10'
+                        ? ' text-black bg-pink-500 font-medium'
+                        : 'text-gray-400 hover:text-black'
                 }`}
             >
-                <FiUser className={iconClass} />
+                <FiUser className="flex-shrink-0"/>
                 Профиль
             </button>
 
             <button
                 onClick={() => setActiveTab('tags')}
-                className={`${baseClass} ${
+                className={`w-full flex items-center gap-3 px-4 py-3 rounded-3xl text-left transition-colors ${
                     activeTab === 'tags'
-                        ? 'bg-black text-lime-400 border border-lime-400'
-                        : 'text-white hover:text-lime-300 hover:bg-black/40 border border-white/10'
+                        ? ' text-black bg-pink-500 font-medium'
+                        : 'text-gray-400 hover:text-black'
                 }`}
             >
-                <AiOutlineTag className={iconClass} />
-                Выбор тегов
-            </button>
-
-            <button
-                onClick={() => setActiveTab('security')}
-                className={`${baseClass} ${
-                    activeTab === 'security'
-                        ? 'bg-black text-lime-400 border border-lime-400'
-                        : 'text-white hover:text-lime-300 hover:bg-black/40 border border-white/10'
-                }`}
-            >
-                <FiLock className={iconClass} />
-                Безопасность
+                <FiTag className="flex-shrink-0"/>
+                Интересы
             </button>
         </nav>
     );
-};
+}
