@@ -5,6 +5,7 @@ from fastapi import HTTPException, Header, status, Cookie, Depends
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from jose import jwt, JWTError
 from api.utils.supabase_client import supabase_client
+import uuid
 
 from config import SECRET_KEY, ALGORITHM, ACCESS_TOKEN_EXPIRE_MINUTES
 
@@ -51,3 +52,11 @@ async def get_current_user_id(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Invalid or expired token",
         )
+
+
+def generate_unique_filename(user_id: str, original_filename: str) -> str:
+    """Генерация уникального имени файла"""
+    timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
+    unique_id = uuid.uuid4().hex[:6]
+    file_ext = original_filename.split(".")[-1]
+    return f"{user_id}_{timestamp}_{unique_id}.{file_ext}"
