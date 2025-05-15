@@ -40,3 +40,4 @@ export async function updateProfile(data: object) {
     })
     return response.ok;
 }
+

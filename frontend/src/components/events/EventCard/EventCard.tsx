@@ -60,32 +60,32 @@ export default function EventCard(event: Event) {
 
     return (
         <div
-            className="bg-white rounded-3xl shadow-sm overflow-hidden border border-gray-100 hover:shadow-[0_4px_16px_0_rgba(16,185,129,0.15)] transition-shadow mb-6 max-w-xl">
-            <div className="relative h-48 bg-gradient-to-r from-emerald-50 to-emerald-100">
+            className="bg-neutral-900 rounded-3xl shadow-sm overflow-hidden border border-pink-500 hover:shadow-[0_4px_16px_0_rgba(167,252,0,0.15)] transition-shadow mb-6 max-w-xl">
+            <div className="relative h-48 bg-gradient-to-r from-neutral-800 to-neutral-700">
                 {event.image ? (
                     <img src={event.image} className="w-full h-full object-cover" alt={event.title}/>
                 ) : (
                     <div className="flex items-center justify-center h-full">
-
+                        <div className="text-gray-400">Изображение мероприятия</div>
                     </div>
                 )}
 
                 {userID === event.organizer.id.toString() && <Link
                     href={`/events/${event.id}/edit`}
-                    className="absolute top-3 right-3 p-2 bg-white rounded-full shadow-md hover:bg-gray-100 transition-colors"
+                    className="absolute top-3 right-3 p-2 bg-neutral-800 rounded-full shadow-md hover:bg-neutral-700 transition-colors border border-pink-500"
                 >
-                    <MdModeEdit/>
+                    <MdModeEdit className="text-lime-400"/>
                 </Link>}
             </div>
 
             <div className="p-5">
                 <div className="flex justify-between items-start mb-3">
                     <div>
-                        <Link className="text-xl font-bold text-gray-800 mb-1"
+                        <Link className="text-xl font-bold text-white mb-1"
                               href={`/events/${event.id}`}>{event.title}</Link>
 
                         <div className="flex flex-wrap gap-x-4 gap-y-2 mb-2">
-                            <div className="flex items-center text-sm text-emerald-600">
+                            <div className="flex items-center text-sm text-lime-400">
                                 <svg className="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24"
                                      stroke="currentColor">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
@@ -94,7 +94,7 @@ export default function EventCard(event: Event) {
                                 <span>{startDate}</span>
                             </div>
 
-                            <div className="flex items-center text-sm text-emerald-600">
+                            <div className="flex items-center text-sm text-lime-400">
                                 <svg className="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24"
                                      stroke="currentColor">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
@@ -109,7 +109,7 @@ export default function EventCard(event: Event) {
                                 {event.tags.map(tag => (
                                     <span
                                         key={tag}
-                                        className="bg-emerald-50 text-emerald-800 text-xs px-2 py-1 rounded-full"
+                                        className="bg-neutral-800 text-lime-400 text-xs px-2 py-1 rounded-full border border-pink-500"
                                     >
                                         #{tag}
                                     </span>
@@ -120,13 +120,13 @@ export default function EventCard(event: Event) {
 
                     <div className="flex flex-col items-end">
                         <span
-                            className="bg-emerald-100 text-emerald-800 text-xs px-2 py-1 rounded-full whitespace-nowrap mb-1">
+                            className="bg-neutral-800 text-lime-400 text-xs px-2 py-1 rounded-full whitespace-nowrap mb-1 border border-pink-500">
                             {participantsCount} участников
                         </span>
                         {friendsCount > 0 && (
                             <button
                                 onClick={() => setShowFriends(!showFriends)}
-                                className="bg-blue-50 text-blue-800 text-xs px-2 py-1 rounded-full whitespace-nowrap hover:bg-blue-100 transition-colors"
+                                className="bg-neutral-800 text-pink-400 text-xs px-2 py-1 rounded-full whitespace-nowrap hover:bg-neutral-700 transition-colors border border-pink-500"
                             >
                                 {friendsCount} друг{friendsCount > 1 ? 'а' : ''} идет
                             </button>
@@ -135,24 +135,24 @@ export default function EventCard(event: Event) {
                 </div>
 
                 {showFriends && friendsCount > 0 && (
-                    <div className="mb-4 p-3 bg-blue-50 rounded-lg">
-                        <h4 className="text-sm font-medium text-blue-800 mb-2">Идут из друзей:</h4>
+                    <div className="mb-4 p-3 bg-neutral-800 rounded-lg border border-pink-500">
+                        <h4 className="text-sm font-medium text-pink-400 mb-2">Идут из друзей:</h4>
                         {event.friends_participants && <div className="flex flex-wrap gap-2">
                             {event.friends_participants.map(friend => (
                                 <Link
                                     key={friend.id}
                                     href={`/profile/${friend.id}`}
-                                    className="flex items-center gap-2 text-sm text-blue-700 hover:text-blue-900"
+                                    className="flex items-center gap-2 text-sm text-pink-400 hover:text-pink-300"
                                 >
                                     {friend.avatar_url ? (
                                         <img
                                             src={friend.avatar_url}
                                             alt={`${friend.first_name} ${friend.last_name}`}
-                                            className="w-6 h-6 rounded-full"
+                                            className="w-6 h-6 rounded-full border border-pink-500"
                                         />
                                     ) : (
                                         <div
-                                            className="w-6 h-6 bg-blue-100 rounded-full flex items-center justify-center text-blue-800 text-xs">
+                                            className="w-6 h-6 bg-neutral-700 rounded-full flex items-center justify-center text-pink-400 text-xs border border-pink-500">
                                             {friend.first_name[0]}{friend.last_name[0]}
                                         </div>
                                     )}
@@ -165,9 +165,9 @@ export default function EventCard(event: Event) {
 
                 <DescriptionMenu description={event.description}/>
 
-                <div className="flex justify-between items-end mt-4 border-t pt-4">
-                    <div className="flex items-center text-sm text-gray-600">
-                        <svg className="h-5 w-5 mr-2 text-emerald-500" fill="none" viewBox="0 0 24 24"
+                <div className="flex justify-between items-end mt-4 border-t border-neutral-700 pt-4">
+                    <div className="flex items-center text-sm text-gray-300">
+                        <svg className="h-5 w-5 mr-2 text-lime-400" fill="none" viewBox="0 0 24 24"
                              stroke="currentColor">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
                                   d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
@@ -175,7 +175,7 @@ export default function EventCard(event: Event) {
                                   d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
                         </svg>
                         <div>
-                            <p className="font-medium">Место проведения</p>
+                            <p className="font-medium text-white">Место проведения</p>
                             <p>{event.location}</p>
                         </div>
                     </div>
@@ -183,19 +183,23 @@ export default function EventCard(event: Event) {
                     <JoinButton isJoined={isJoined} id={String(event.id)}/>
                 </div>
 
-                <div className="mt-4 text-sm text-gray-500 flex items-center gap-2">
+                <div className="mt-4 text-sm text-gray-400 flex items-center gap-2">
                     {event.organizer.avatar_url ? (
                         <img src={event.organizer.avatar_url} alt="Ава"
-                             className="w-6 h-6 rounded-full"/>
+                             className="w-6 h-6 rounded-full border border-pink-500"/>
                     ) : (
                         <div
-                            className="w-6 h-6 bg-gray-200 rounded-full flex items-center justify-center text-gray-500 text-xs">
+                            className="w-6 h-6 bg-neutral-800 rounded-full flex items-center justify-center text-pink-400 text-xs border border-pink-500">
                             {event.organizer.first_name[0]}
                         </div>
                     )}
                     <div>
                         <Link
-                            href={`/profile/${event.organizer.id}`}>Организатор: {event.organizer.first_name} {event.organizer.last_name}</Link>
+                            href={`/profile/${event.organizer.id}`}
+                            className="text-white hover:text-lime-400"
+                        >
+                            Организатор: {event.organizer.first_name} {event.organizer.last_name}
+                        </Link>
                     </div>
                 </div>
             </div>

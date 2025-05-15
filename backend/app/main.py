@@ -25,3 +25,7 @@ app.include_router(friends_router)
 app.include_router(search_router)
 app.include_router(events_router)
 app.include_router(groups_router)
+
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run(app, host="0.0.0.0", port=8000)

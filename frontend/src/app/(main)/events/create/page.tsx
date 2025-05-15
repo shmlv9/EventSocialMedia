@@ -94,12 +94,12 @@ export default function CreateEventForm() {
 
     return (
         <div className="flex justify-center items-center py-10 px-4">
-            <div className="w-full max-w-2xl bg-white shadow-lg rounded-3xl p-8 space-y-6">
-                <h2 className="text-2xl font-semibold text-gray-800">Создание мероприятия</h2>
+            <div className="w-full max-w-2xl bg-neutral-900 shadow-lg rounded-3xl p-8 space-y-6 border border-pink-500">
+                <h2 className="text-2xl font-semibold text-white">Создание мероприятия</h2>
 
                 <div className="space-y-6">
                     <div>
-                        <label htmlFor="title" className="block text-sm font-medium text-gray-700 mb-1">
+                        <label htmlFor="title" className="block text-sm font-medium text-gray-300 mb-1">
                             Название*
                         </label>
                         <input
@@ -109,14 +109,14 @@ export default function CreateEventForm() {
                             value={formData.title}
                             onChange={handleChange}
                             onKeyDown={handleKeyDown}
-                            className="w-full px-4 py-2 border border-gray-300 rounded-3xl focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+                            className="w-full px-4 py-2 bg-neutral-800 border border-neutral-700 text-white rounded-3xl focus:ring-2 focus:ring-lime-400 focus:border-transparent"
                             placeholder="Введите название"
                             required
                         />
                     </div>
 
                     <div>
-                        <label htmlFor="description" className="block text-sm font-medium text-gray-700 mb-1">
+                        <label htmlFor="description" className="block text-sm font-medium text-gray-300 mb-1">
                             Описание
                         </label>
                         <textarea
@@ -124,7 +124,7 @@ export default function CreateEventForm() {
                             name="description"
                             value={formData.description}
                             onChange={handleChange}
-                            className="w-full px-4 py-2 border border-gray-300 rounded-3xl focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+                            className="w-full px-4 py-2 bg-neutral-800 border border-neutral-700 text-white rounded-3xl focus:ring-2 focus:ring-lime-400 focus:border-transparent"
                             rows={4}
                             placeholder="Опишите мероприятие"
                         />
@@ -135,16 +135,18 @@ export default function CreateEventForm() {
                             label="Начало события*"
                             value={start_timestamptz}
                             onChange={setStart_timestamptz}
+
                         />
                         <UtcDateTimePicker
                             label="Конец события*"
                             value={end_timestamptz}
                             onChange={setEnd_timestamptz}
+
                         />
                     </div>
 
                     <div>
-                        <label htmlFor="location" className="block text-sm font-medium text-gray-700 mb-1">
+                        <label htmlFor="location" className="block text-sm font-medium text-gray-300 mb-1">
                             Местоположение
                         </label>
                         <input
@@ -154,13 +156,13 @@ export default function CreateEventForm() {
                             value={formData.location}
                             onChange={handleChange}
                             onKeyDown={handleKeyDown}
-                            className="w-full px-4 py-2 border border-gray-300 rounded-3xl focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+                            className="w-full px-4 py-2 bg-neutral-800 border border-neutral-700 text-white rounded-3xl focus:ring-2 focus:ring-lime-400 focus:border-transparent"
                             placeholder="Где будет проходить"
                         />
                     </div>
 
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">Теги</label>
+                        <label className="block text-sm font-medium text-gray-300 mb-1">Теги</label>
                         <TagSelect
                             value={formData.tags}
                             onChange={(selected) => setFormData(prev => ({...prev, tags: selected}))}
@@ -171,7 +173,7 @@ export default function CreateEventForm() {
                         <button
                             type="button"
                             onClick={() => router.back()}
-                            className="px-5 py-2 border border-gray-300 rounded-3xl text-gray-700 hover:bg-gray-100 transition-colors"
+                            className="px-5 py-2 border border-neutral-700 rounded-3xl text-gray-300 hover:bg-neutral-800 transition-colors"
                             disabled={isSubmitting}
                         >
                             Отмена
@@ -180,7 +182,7 @@ export default function CreateEventForm() {
                             type="button"
                             onClick={handleSubmit}
                             disabled={isSubmitting}
-                            className="px-5 py-2 bg-emerald-600 text-white rounded-3xl hover:bg-emerald-700 transition-colors flex items-center disabled:opacity-50"
+                            className="px-5 py-2 bg-lime-400 text-black rounded-3xl hover:bg-lime-300 transition-colors flex items-center disabled:opacity-50 font-medium"
                         >
                             <FaPlusCircle className="mr-2"/>
                             {isSubmitting ? 'Создание...' : 'Создать'}

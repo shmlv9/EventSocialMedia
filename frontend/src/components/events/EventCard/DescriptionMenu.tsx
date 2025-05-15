@@ -7,17 +7,17 @@ export default function DescriptionMenu({description}: { description: string }) 
 
     return (
         <div className="mb-4">
-            <p className={`text-gray-700 ${!isExpanded && 'line-clamp-2'}`}>
+            <p className={`text-gray-300 ${!isExpanded && 'line-clamp-2'}`}>
                 {description}
             </p>
             {description.length > 100 && (
                 <button
                     onClick={() => setIsExpanded(!isExpanded)}
-                    className="text-emerald-600 hover:text-emerald-700 hover:cursor-pointer text-sm mt-1 focus:outline-none"
+                    className="text-lime-400 hover:text-lime-300 hover:cursor-pointer text-sm mt-1 focus:outline-none transition-colors"
                 >
                     {isExpanded ? 'Свернуть' : 'Читать далее...'}
                 </button>
             )}
         </div>
     );
-};
+}

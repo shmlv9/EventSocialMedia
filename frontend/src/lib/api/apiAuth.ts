@@ -52,11 +52,11 @@ export async function checkLogin(
 export async function registerUser(
     email: string,
     password: string,
-    name: string,
-    dateBirth: string,
+    firstName: string,
+    lastName: string,
     phone: string,
+    birthDate: string,
 ) {
-    const [firstName, lastName] = name.split(' ');
 
     try {
         const response = await fetch(`${apiUrl}/user/register`, {
@@ -70,7 +70,7 @@ export async function registerUser(
                 password: password,
                 first_name: firstName,
                 last_name: lastName || '',
-                birthday: dateBirth,
+                birthday: birthDate,
             }),
         });
 

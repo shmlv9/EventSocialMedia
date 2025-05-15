@@ -1,66 +1,92 @@
-import {cookies} from 'next/headers'
-import {redirect} from 'next/navigation'
-import {fetchID} from '@/lib/api/apiUser'
-import NavItem from "@/components/main/NavItem";
-import ClientWrapper from "@/context/ClientWrapper";
-import React from "react";
+import {cookies} from 'next/headers';
+import {redirect} from 'next/navigation';
+import {fetchID} from '@/lib/api/apiUser';
+import ClientWrapper from '@/context/ClientWrapper';
+import Link from 'next/link';
+import React from 'react';
+import {FaHome, FaComments, FaUser} from 'react-icons/fa';
+import {MdExplore} from 'react-icons/md';
+
+
+const desktopNavLinks = [
+    {href: '/events', icon: <FaHome/>, label: 'Главная'},
+    {href: '/messenger', icon: <FaComments/>, label: 'Сообщения'},
+    {href: '/explore', icon: <MdExplore/>, label: 'Поиск'},
+    {href: (userID: string) => `/profile/${userID}`, icon: <FaUser/>, label: 'Профиль'},
+];
+
+
+const mobileNavLinks = [
+    {href: '/events', icon: <FaHome/>, label: 'Главная'},
+    {href: '/messenger', icon: <FaComments/>, label: 'Сообщения'},
+    {href: '/explore', icon: <MdExplore/>, label: 'Поиск'},
+    {href: (userID: string) => `/profile/${userID}`, icon: <FaUser/>, label: 'Профиль'},
+];
 
 export default async function MainLayout({children}: { children: React.ReactNode }) {
-    const cookieStore = await cookies()
-    const token = cookieStore.get('token')
-    if (!token) redirect('/login')
+    const cookieStore = await cookies();
+    const token = cookieStore.get('token');
+    if (!token) redirect('/login');
 
-    const userID = await fetchID()
-    if (!userID || userID.detail) redirect('/logout')
-
+    const userID = await fetchID();
+    if (!userID || userID.detail) redirect('/logout');
 
     return (
         <ClientWrapper userID={String(userID)}>
-            <div className="min-h-screen">
-                {/* Десктоп */}
-                <div className="hidden md:flex h-full max-w-7xl mx-auto gap-4 p-4">
-                    <aside
-                        className="sticky top-4 h-[calc(100vh-32px)] w-64 bg-white border border-gray-200 rounded-3xl shadow-sm flex flex-col flex-shrink-0">
-                        <div className="p-4 border-b border-gray-200 flex flex-col items-center">
-                            <h1 className='font-bold text-3xl text-emerald-800 mb-2'>ESM</h1>
-                            <h3 className='text-gray-600'>Соцсеть для Т2</h3>
+            <div className="min-h-screen bg-black text-white font-sans flex flex-col">
+                <main className="flex-1 flex flex-col md:flex-row overflow-hidden">
+                    {/* Боковое меню для десктопа */}
+                    <div
+                        className="hidden md:block fixed left-0 top-0 h-full w-64 bg-black border-r border-pink-500 shadow-xl z-10">
+                        <div className="p-6 h-full flex flex-col">
+                            <div className="text-3xl font-extrabold tracking-tight text-pink-500 mb-8">Миротека</div>
+                            <nav className="flex flex-col gap-3 flex-1">
+                                {desktopNavLinks.map(({href, icon, label}) => (
+                                    <Link
+                                        key={label}
+                                        href={typeof href === 'function' ? href(String(userID)) : href}
+                                        className="flex items-center gap-3 text-white hover:bg-pink-500 hover:text-black px-4 py-2 rounded-xl transition"
+                                    >
+                                        {icon}
+                                        <span>{label}</span>
+                                    </Link>
+                                ))}
+                            </nav>
+                            <div className="mt-auto">
+                                <form action="/logout" method="POST">
+                                    <button
+                                        className="w-full px-4 py-2 bg-lime-400 text-black font-bold rounded-full hover:bg-lime-300 transition">
+                                        Выйти
+                                    </button>
+                                </form>
+                            </div>
                         </div>
+                    </div>
 
-                        <nav className="p-4 space-y-1 flex-grow">
-                            <NavItem href="/events" icon="1">Главная</NavItem>
-                            <NavItem href="/messenger" icon="2">Сообщения</NavItem>
-                            <NavItem href={`/explore`} icon="3">Поиск</NavItem>
-                            <NavItem href={`/profile/${userID}`} icon="4">Профиль</NavItem>
-                        </nav>
-
-                        <form action="/logout" method="POST" className="p-4">
-                            <button
-                                className={'p-2 rounded-3xl bg-emerald-600 text-white w-full hover:cursor-pointer hover:bg-emerald-700'}>Выйти
-                            </button>
-                        </form>
-                    </aside>
-
-                    <main className="flex-1 bg-white rounded-3xl overflow-y-auto p-4">
-                        {children}
-                    </main>
-                </div>
-
-                {/* Мобилка */}
-                <div className="md:hidden flex flex-col min-h-screen">
-                    <main className="flex-1 overflow-auto p-4 pb-16">
-                        {children}
-                    </main>
-                    <nav
-                        className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 shadow-lg m-5 rounded-3xl">
-                        <div className="flex">
-                            <NavItem href="/events" icon="1" mobile/>
-                            <NavItem href="/messenger" icon="2" mobile/>
-                            <NavItem href={`/explore`} icon="3">Поиск</NavItem>
-                            <NavItem href={`/profile/${userID}`} icon="4" mobile/>
+                    {/* Основной контент */}
+                    <section className="flex-1 md:ml-64 p-4 md:p-8 overflow-y-auto bg-neutral-950">
+                        <div
+                            className="w-full max-w-5xl mx-auto bg-neutral-900 border border-neutral-800 rounded-3xl shadow-2xl p-6 md:">
+                            {children}
                         </div>
-                    </nav>
-                </div>
+                    </section>
+                </main>
+
+                {/* Мобильное нижнее меню */}
+                <nav
+                    className="md:hidden fixed bottom-0 left-0 right-0 bg-black border-t border-pink-500 shadow-md py-3 px-6 z-50 flex justify-around">
+                    {mobileNavLinks.map(({href, icon, label}) => (
+                        <Link
+                            key={label}
+                            href={typeof href === 'function' ? href(String(userID)) : href}
+                            className="text-white flex flex-col items-center justify-center gap-1 hover:text-lime-400"
+                        >
+                            {icon}
+                            <span className="text-xs">{label}</span>
+                        </Link>
+                    ))}
+                </nav>
             </div>
         </ClientWrapper>
-    )
+    );
 }

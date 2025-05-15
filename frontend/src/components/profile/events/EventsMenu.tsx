@@ -1,8 +1,8 @@
 'use client'
 
-import {useState} from "react";
+import { useState } from "react";
 import EventCard from "@/components/events/EventCard/EventCard";
-import {useUser} from "@/context/userContext";
+import { useUser } from "@/context/userContext";
 
 type Organizer = {
     id: number;
@@ -32,23 +32,20 @@ type Props = {
     id: string;
 };
 
-export default function EventsMenu({organizedEvents, participatingEvents, id}: Props) {
-
+export default function EventsMenu({ organizedEvents, participatingEvents, id }: Props) {
     const [selectedTab, setSelectedTab] = useState<'organized' | 'participating'>('organized');
-
-    const {userID} = useUser()
-
-    const isOwn = userID === id
+    const { userID } = useUser();
+    const isOwn = userID === id;
 
     const renderEvents = () => {
         const events = selectedTab === 'organized' ? organizedEvents : participatingEvents;
 
         if (!events.length) {
-            return <p className="text-gray-500 text-center mt-6">Нет мероприятий для отображения</p>;
+            return <p className="text-gray-400 text-center mt-6">Нет мероприятий для отображения</p>;
         }
 
         return (
-            <div className="mt-4 space-y-6">
+            <div className="mt-4 space-y-6 flex justify-center flex-col items-center">
                 {events.map(event => (
                     <EventCard key={event.id} {...event} />
                 ))}
@@ -57,28 +54,28 @@ export default function EventsMenu({organizedEvents, participatingEvents, id}: P
     };
 
     return (
-        <div>
+        <div className="p-6 rounded-3xl border border-pink-500">
             {/* Tabs */}
-            <div className="flex justify-center gap-4 border-b border-gray-200 mb-6">
+            <div className="flex justify-center gap-6 border-b border-neutral-700 mb-6 pb-2">
                 <button
                     onClick={() => setSelectedTab('organized')}
-                    className={`py-2 px-4 text-sm font-medium hover:cursor-pointer ${
+                    className={`py-2 px-6 text-sm font-medium rounded-full transition-colors duration-300 ${
                         selectedTab === 'organized'
-                            ? 'border-b-2 border-emerald-500 text-emerald-600'
-                            : 'text-gray-500 hover:text-emerald-600'
+                            ? 'bg-lime-400 text-black border-lime-400'
+                            : 'text-gray-400 hover:text-lime-400 border border-transparent'
                     }`}
                 >
-                    Мои мероприятия
+                    {isOwn ? 'Мои мероприятия' : 'Организует'}
                 </button>
                 <button
                     onClick={() => setSelectedTab('participating')}
-                    className={`py-2 px-4 text-sm font-medium hover:cursor-pointer ${
+                    className={`py-2 px-6 text-sm font-medium rounded-full transition-colors duration-300 ${
                         selectedTab === 'participating'
-                            ? 'border-b-2 border-emerald-500 text-emerald-600'
-                            : 'text-gray-500 hover:text-emerald-600'
+                            ? 'bg-lime-400 text-black border-lime-400'
+                            : 'text-gray-400 hover:text-lime-400 border border-transparent'
                     }`}
                 >
-                    Посещаю
+                    {isOwn ? 'Посещаю' : 'Участвует'}
                 </button>
             </div>
             {renderEvents()}

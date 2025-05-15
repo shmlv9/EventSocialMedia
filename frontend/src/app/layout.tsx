@@ -2,17 +2,19 @@ import "./globals.css";
 import type {Metadata} from 'next'
 import React from "react";
 import {Toaster} from "react-hot-toast";
+import './globals.css'
+
 
 
 export const metadata: Metadata = {
-    title: 'ESM',
-    description: 'Добро пожаловать в ESM',
+    title: 'Миротека',
+    description: 'Добро пожаловать в Миротеку',
 }
 
 export default function RootLayout({children,}: Readonly<{ children: React.ReactNode; }>) {
     return (
         <html lang="en">
-        <body className='bg-gray-50'>
+        <body className={'bg-black'}>
         <div>
             <Toaster
                 position="top-center"

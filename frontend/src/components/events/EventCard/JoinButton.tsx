@@ -5,33 +5,43 @@ import toast from 'react-hot-toast';
 import {joinEvent, leaveEvent} from "@/lib/api/apiEvents";
 
 export default function JoinButton({isJoined, id}: { isJoined: boolean, id: string }) {
-
-    const [isJoin, setIsJoin] = useState<boolean>(isJoined)
+    const [isJoin, setIsJoin] = useState<boolean>(isJoined);
+    const [isLoading, setIsLoading] = useState<boolean>(false);
 
     async function handleJoin() {
-        if (isJoin) {
-            if (await leaveEvent(id)) {
-                toast.success('Вы больше не участвуете в мероприятии')
-                setIsJoin(false)
+        setIsLoading(true);
+        try {
+            if (isJoin) {
+                if (await leaveEvent(id)) {
+                    toast.success('Вы больше не участвуете в мероприятии');
+                    setIsJoin(false);
+                } else {
+                    toast.error('Ошибка. Попробуйте выйти позже');
+                }
             } else {
-                toast.error('Ошибка. Попробуйте выйти позже')
+                if (await joinEvent(id)) {
+                    toast.success('Теперь вы участвуете в мероприятии');
+                    setIsJoin(true);
+                } else {
+                    toast.error('Ошибка. Попробуйте присоединиться позже');
+                }
             }
-        } else {
-            if (await joinEvent(id)) {
-                toast.success('Теперь вы участвуете в мероприятии')
-                setIsJoin(true)
-            } else {
-                toast.error('Ошибка. Попробуйте присоединится позже')
-            }
+        } finally {
+            setIsLoading(false);
         }
     }
 
     return (
         <button
             onClick={handleJoin}
-            className={`min-w-[120px] p-2 rounded-3xl hover:cursor-pointer ${isJoin ? 'bg-gray-50 text-emerald-600 border border-emerald-600' : 'bg-emerald-600 hover:bg-emerald-700 text-white'}`}
+            disabled={isLoading}
+            className={`min-w-[120px] p-2 rounded-3xl font-medium transition-colors duration-200 ${
+                isJoin 
+                    ? 'bg-neutral-800 text-lime-400 border border-lime-400 hover:bg-neutral-700' 
+                    : 'bg-lime-400 text-black hover:bg-lime-300'
+            } ${isLoading ? 'opacity-80 cursor-not-allowed' : 'cursor-pointer'}`}
         >
-            {isJoin ? 'Вы идёте' : 'Участвовать'}
+            {isLoading ? 'Загрузка...' : isJoin ? 'Вы идёте ✓' : 'Участвовать'}
         </button>
     );
-};
+}

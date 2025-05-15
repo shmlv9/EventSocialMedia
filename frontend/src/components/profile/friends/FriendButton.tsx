@@ -74,9 +74,9 @@ export default function FriendButton({ id, apiUrl, token, status }: Props) {
             {status === 'in_friends' && (
                 <button
                     disabled
-                    className="flex items-center gap-2 bg-emerald-600 p-2 rounded-2xl text-white opacity-80 cursor-not-allowed"
+                    className="flex items-center gap-2 bg-neutral-800 p-2 rounded-2xl text-white border border-pink-500 cursor-not-allowed"
                 >
-                    <FaCheck />
+                    <FaCheck className="text-lime-400" />
                     В друзьях
                 </button>
             )}
@@ -84,11 +84,11 @@ export default function FriendButton({ id, apiUrl, token, status }: Props) {
             {status === 'not_in_friends' && (
                 <button
                     onClick={handleAdd}
-                    disabled={loading}
-                    className={`flex items-center gap-2 p-2 rounded-2xl text-white ${
+                    disabled={loading || buttonState}
+                    className={`flex items-center gap-2 p-2 rounded-2xl text-white border ${
                         buttonState
-                            ? 'bg-gray-400 opacity-80 cursor-not-allowed'
-                            : 'bg-emerald-600 hover:bg-emerald-700 transition'
+                            ? 'bg-neutral-800 border-pink-500 cursor-not-allowed'
+                            : 'bg-lime-400 border-lime-400 text-black hover:bg-lime-300 transition'
                     }`}
                 >
                     <FaUserPlus />
@@ -99,9 +99,9 @@ export default function FriendButton({ id, apiUrl, token, status }: Props) {
             {status === 'application_sent' && (
                 <button
                     disabled
-                    className="flex items-center gap-2 bg-gray-400 p-2 rounded-2xl text-white opacity-80 cursor-not-allowed"
+                    className="flex items-center gap-2 bg-neutral-800 p-2 rounded-2xl text-white border border-pink-500 cursor-not-allowed"
                 >
-                    <FaClock />
+                    <FaClock className="text-pink-400" />
                     Заявка отправлена
                 </button>
             )}
@@ -111,14 +111,14 @@ export default function FriendButton({ id, apiUrl, token, status }: Props) {
                     <button
                         onClick={handleAccept}
                         disabled={loading}
-                        className="bg-emerald-600 p-2 rounded-2xl text-white"
+                        className="flex items-center gap-2 bg-lime-400 p-2 rounded-2xl text-black border border-lime-400 hover:bg-lime-300 transition"
                     >
                         Принять
                     </button>
                     <button
                         onClick={handleReject}
                         disabled={loading}
-                        className="bg-rose-700 p-2 rounded-2xl text-white"
+                        className="flex items-center gap-2 bg-neutral-800 p-2 rounded-2xl text-white border border-pink-500 hover:bg-neutral-700 transition"
                     >
                         Отклонить
                     </button>

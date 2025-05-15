@@ -1,66 +1,95 @@
 'use client'
 
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {toast} from 'react-hot-toast';
-
-type Tag = {
-    id: string;
-    label: string;
-};
-
-const availableTags: Tag[] = [
-    {id: '1', label: 'Технологии'},
-    {id: '2', label: 'Спорт'},
-    {id: '3', label: 'Путешествия'},
-    {id: '4', label: 'Искусство'},
-    {id: '5', label: 'Музыка'},
-    {id: '6', label: 'Фотография'},
-];
+import {fetchProfileClient, updateProfile} from "@/lib/api/apiUser";
+import {useUser} from "@/context/userContext";
 
 export default function TagSelector() {
+
+    const availableTags = [
+        "спорт", "музыка", "технологии", "искусство", "путешествия",
+        "кино", "волонтёрство", "наука", "экология", "бизнес",
+        "стартапы", "образование", "фотография", "гейминг", "литература",
+        "театр", "здоровье", "йога", "танцы", "кулинария",
+        "мода", "финансы", "маркетинг", "дизайн", "архитектура"
+    ];
+
     const [selectedTags, setSelectedTags] = useState<string[]>([]);
 
-    const toggleTagSelection = (tagId: string) => {
-        setSelectedTags((prevTags) => {
-            if (prevTags.includes(tagId)) {
-                return prevTags.filter((id) => id !== tagId);
-            } else {
-                return [...prevTags, tagId];
-            }
-        });
+    const toggleTagSelection = (tag: string) => {
+        setSelectedTags(prev =>
+            prev.includes(tag)
+                ? prev.filter(t => t !== tag)
+                : [...prev, tag]
+        );
     };
 
-    const handleSave = () => {
-        if (selectedTags.length > 0) {
-            toast.success('Теги успешно сохранены!');
-        } else {
-            toast.error('Пожалуйста, выберите хотя бы один тег!');
+    const handleSave = async () => {
+        if (selectedTags.length === 0) {
+            toast.error('Выберите хотя бы один тег!');
+            return;
+        }
+        try {
+            const response = await updateProfile({tags: selectedTags})
+            if (response) {
+                toast.success('Теги обновлены')
+            } else {
+                toast.error('Что-то пошло не так. Попробуйте позже')
+            }
+        } catch (e) {
+            toast.error('Что-то пошло не так. Попробуйте позже')
+            console.log(e)
         }
     };
 
+    const {userID} = useUser()
+
+    useEffect(() => {
+    async function loadProfile() {
+      const profile = await fetchProfileClient(userID)
+      setSelectedTags(profile.tags)
+    }
+
+    loadProfile()
+  }, [userID])
     return (
-        <div className="space-y-4">
-            <h2 className="text-xl font-semibold text-gray-800">Выберите теги</h2>
-            <div className="space-y-2">
-                {availableTags.map((tag) => (
-                    <div key={tag.id} className="flex items-center">
-                        <input
-                            type="checkbox"
-                            id={tag.id}
-                            checked={selectedTags.includes(tag.id)}
-                            onChange={() => toggleTagSelection(tag.id)}
-                            className="mr-2"
-                        />
-                        <label htmlFor={tag.id} className="text-sm text-gray-700">{tag.label}</label>
-                    </div>
+        <div className="p-6 rounded-2xl">
+            <h2 className="text-xl font-bold text-white mb-4">Выберите интересующие теги</h2>
+            <p className="text-gray-400 mb-6">Можно выбрать несколько вариантов</p>
+
+            <div className="flex flex-wrap gap-3 mb-6">
+                {availableTags.map(tag => (
+                    <button
+                        key={tag}
+                        type="button"
+                        onClick={() => toggleTagSelection(tag)}
+                        className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
+                            selectedTags.includes(tag)
+                                ? 'bg-lime-400 text-black'
+                                : 'bg-neutral-800 text-gray-300 hover:bg-neutral-700'
+                        }`}
+                    >
+                        {tag}
+                        {selectedTags.includes(tag) && (
+                            <span className="ml-2">✓</span>
+                        )}
+                    </button>
                 ))}
             </div>
-            <div className="flex justify-between">
+
+            <div className="flex justify-between items-center">
+                <span className="text-gray-400">
+                    Выбрано: {selectedTags.length}
+                </span>
                 <button
                     onClick={handleSave}
-                    className="px-6 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors flex items-center"
+                    disabled={selectedTags.length === 0}
+                    className="px-6 py-2 bg-lime-400 text-black rounded-full hover:bg-lime-300
+                              disabled:bg-neutral-700 disabled:text-gray-400 disabled:cursor-not-allowed
+                              transition-colors font-medium"
                 >
-                    Сохранить теги
+                    Сохранить выбор
                 </button>
             </div>
         </div>
