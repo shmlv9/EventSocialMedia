@@ -1,9 +1,14 @@
 from typing import Literal
+import supabase
 
 from api.utils.functions import get_current_user_id
 from api.utils.models import EventCreateRequest
 from api.utils.supabase_client import supabase_client
-from fastapi import APIRouter, Depends, HTTPException, Query
+from fastapi import APIRouter, Query, Form, File, UploadFile, HTTPException, Depends
+from datetime import datetime
+from typing import Optional, List
+import uuid
+import json
 
 events_router = APIRouter(
     prefix='/events',
@@ -40,6 +45,28 @@ def create_event(event: EventCreateRequest, sponsor_id: int = Depends(get_curren
         raise HTTPException(status_code=500, detail="Failed to create event")
 
     return {"msg": "Event created successfully", "event_id": response.data[0]["id"]}
+
+
+@events_router.post("/{event_id}/upload-image")
+def upload_event_image(event_id: int, file: UploadFile = File(...), sponsor_id: int = Depends(get_current_user_id)):
+    event = supabase_client.table("events").select("sponsor_id").eq("id", event_id).single().execute().data
+    if not event:
+        raise HTTPException(status_code=404, detail="Event not found")
+    if event["sponsor_id"] != sponsor_id:
+        raise HTTPException(status_code=403, detail="You are not the sponsor of this event")
+
+    from uuid import uuid4
+    file_ext = file.filename.split(".")[-1]
+    file_path = f"events/{uuid4()}.{file_ext}"
+
+    file_bytes = file.file.read()
+    supabase_client.storage.from_("images").upload(file_path, file_bytes, {"content-type": file.content_type})
+
+    public_url = supabase_client.storage.from_("images").get_public_url(file_path)
+
+    supabase_client.table("events").update({"image": public_url}).eq("id", event_id).execute()
+
+    return {"msg": "Image uploaded successfully", "image_url": public_url}
 
 
 @events_router.get("/filter")
