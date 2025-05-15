@@ -7,6 +7,8 @@ import UtcDateTimePicker from "@/components/ui/DateTimePicker/UtcDateTimePicker"
 import TagSelect from "@/components/ui/TagSelect";
 import toast from "react-hot-toast";
 import {createEvent} from "@/lib/api/apiEvents";
+import ImageUploader from "@/components/ui/ImageUploader";
+import {UploadEventImg} from "@/lib/api/apiImage";
 
 type EventFormData = {
     title: string;
@@ -33,6 +35,8 @@ export default function CreateEventForm() {
         tags: [],
     });
 
+    const [image, setImage] = useState<File>()
+
     const [start_timestamptz, setStart_timestamptz] = useState<Date | null>(null);
     const [end_timestamptz, setEnd_timestamptz] = useState<Date | null>(null);
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -49,6 +53,7 @@ export default function CreateEventForm() {
             end_timestamptz: end_timestamptz?.toISOString() || '',
         };
     };
+
 
     const handleSubmit = async () => {
         if (!start_timestamptz || !end_timestamptz) {
@@ -70,13 +75,22 @@ export default function CreateEventForm() {
             setIsSubmitting(true);
             const eventData = prepareFormData();
             const response = await createEvent(eventData);
+            const eid = response.event_id
 
+            if (image) {
+                const imgResponse = await UploadEventImg(eid, image)
+
+                if (imgResponse) {
+                    toast.success('Изображение успешно прикреплено\'')
+                }
+            }
             if (response) {
                 toast.success('Мероприятие создано успешно!');
-                router.push('/events');
-            } else {
+            }
+            else {
                 toast.error('Ошибка при создании мероприятия');
             }
+
         } catch (error) {
             console.error('Error creating event:', error);
             toast.error('Произошла ошибка. Пожалуйста, попробуйте позже');
@@ -166,6 +180,14 @@ export default function CreateEventForm() {
                         <TagSelect
                             value={formData.tags}
                             onChange={(selected) => setFormData(prev => ({...prev, tags: selected}))}
+                        />
+                    </div>
+                    <div>
+                        <label className="block text-sm font-medium text-gray-300 mb-1">Теги</label>
+                        <ImageUploader
+                            onUpload={(file: File) => {
+                                setImage(file)
+                            }}
                         />
                     </div>
 

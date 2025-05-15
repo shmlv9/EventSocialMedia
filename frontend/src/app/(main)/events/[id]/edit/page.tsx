@@ -7,6 +7,8 @@ import {FaSave} from "react-icons/fa";
 import {useRouter} from "next/navigation";
 import toast from "react-hot-toast";
 import {useUser} from "@/context/userContext";
+import ImageUploader from "@/components/ui/ImageUploader";
+import {UploadEventImg} from "@/lib/api/apiImage";
 
 type Participant = {
     id: number;
@@ -46,6 +48,8 @@ type EventFormData = {
 export default function EditEvent({params}: { params: Promise<{ id: string }> }) {
     const {id} = React.use(params);
     const router = useRouter();
+
+    const [image, setImage] = useState()
     const [loading, setLoading] = useState<boolean>(false);
     const [event, setEvent] = useState<Event | null>(null);
     const [formData, setFormData] = useState<EventFormData>({
@@ -111,6 +115,13 @@ export default function EditEvent({params}: { params: Promise<{ id: string }> })
             const eventData = prepareFormData();
             const response = await updateEvent(event.id.toString(), eventData);
 
+            if (image) {
+                const imgResponse = await UploadEventImg(event.id, image)
+                if (imgResponse) {
+                    toast.success('Изображение успешно прикреплено')
+                }
+            }
+
             if (response) {
                 toast.success('Изменения сохранены успешно!');
                 router.push(`/events/${event.id}`);
@@ -165,7 +176,8 @@ export default function EditEvent({params}: { params: Promise<{ id: string }> })
                 <div className="text-white">Данное мероприятие не является вашим</div>
             )}
             {!!event && userID === event?.organizer.id.toString() && (
-                <div className="w-full max-w-2xl bg-neutral-900 shadow-lg rounded-3xl p-8 space-y-6 border border-pink-500">
+                <div
+                    className="w-full max-w-2xl bg-neutral-900 shadow-lg rounded-3xl p-8 space-y-6 border border-pink-500">
                     <h2 className="text-2xl font-semibold text-white">Редактирование мероприятия</h2>
 
                     <div className="space-y-6">
@@ -238,6 +250,14 @@ export default function EditEvent({params}: { params: Promise<{ id: string }> })
                                 value={formData.tags}
                                 onChange={(selected) => setFormData(prev => ({...prev, tags: selected}))}
 
+                            />
+                        </div>
+                        <div>
+                            <label className="block text-sm font-medium text-gray-300 mb-1">Теги</label>
+                            <ImageUploader
+                                onUpload={(file: File) => {
+                                    setImage(file)
+                                }}
                             />
                         </div>
 

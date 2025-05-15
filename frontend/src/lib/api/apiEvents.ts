@@ -72,5 +72,5 @@ export async function createEvent(data: object) {
             body: JSON.stringify(data)
         }
     });
-    return response.ok;
+    return response.json();
 }

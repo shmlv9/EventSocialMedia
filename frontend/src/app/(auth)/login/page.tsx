@@ -57,22 +57,24 @@ export default function LoginPage() {
     };
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-black px-4">
-            <div
-                className="w-full max-w-md p-8 bg-neutral-900 shadow-pink-500 border border-pink-500 shadow-2xl rounded-3xl">
-                <h1 className="text-3xl font-bold text-lime-400 mb-2 text-center">
-                    {step === 'auth' ? 'Вход в Миротеку' : 'Введите пароль'}
-                </h1>
-                <p className="text-gray-400 text-center mb-6">
-                    {step === 'auth' ? 'Введите email или телефон' : `Пароль для ${loginValue}`}
-                </p>
+        <div className="min-h-screen flex items-center justify-center px-4">
+            <div className="w-full max-w-md p-8 bg-white rounded-2xl shadow-lg border border-gray-200">
+                {/* Логотип и заголовок */}
+                <div className="text-center mb-6">
+                    <div className="text-3xl font-bold text-black mb-1">
+                        {step === 'auth' ? 'Вход в Миротеку' : 'Введите пароль'}
+                    </div>
+                    <p className="text-gray-500">
+                        {step === 'auth' ? 'Введите email или телефон' : `Пароль для ${loginValue}`}
+                    </p>
+                </div>
 
                 {step === 'auth' ? (
                     <>
                         <SelectMethod loginMethod={loginMethod} setLoginMethod={setLoginMethod}/>
-                        <div className="mt-4 space-y-4">
+                        <div className="mt-6 space-y-4">
                             <div>
-                                <label htmlFor="login" className="block text-sm font-medium text-white mb-1">
+                                <label htmlFor="login" className="block text-sm font-medium text-gray-700 mb-1">
                                     {loginMethod === 'email' ? 'Email' : 'Телефон'}
                                 </label>
                                 <input
@@ -81,15 +83,23 @@ export default function LoginPage() {
                                     value={loginValue}
                                     onChange={(e) => setLoginValue(e.target.value)}
                                     placeholder={loginMethod === 'email' ? 'your@email.com' : '+7 (999) 123-45-67'}
-                                    className="w-full px-4 py-2 rounded-xl bg-neutral-800 border border-neutral-700 text-white focus:outline-none focus:ring-2 focus:ring-lime-400 transition"
+                                    className="w-full px-4 py-3 rounded-lg bg-gray-100 text-gray-800 focus:outline-none focus:ring-2 focus:ring-lime-400 transition"
                                 />
                             </div>
                             <button
                                 onClick={handleCheckUser}
                                 disabled={isLoading}
-                                className="w-full bg-lime-400 text-black font-bold py-2 rounded-full hover:bg-lime-300 transition"
+                                className="w-full bg-lime-400 text-black font-bold py-3 rounded-lg hover:bg-lime-300 transition flex items-center justify-center"
                             >
-                                {isLoading ? 'Проверка...' : 'Продолжить'}
+                                {isLoading ? (
+                                    <span className="flex items-center">
+                                        <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-black" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                        </svg>
+                                        Проверка...
+                                    </span>
+                                ) : 'Продолжить'}
                             </button>
                         </div>
                     </>
@@ -97,7 +107,7 @@ export default function LoginPage() {
                     <>
                         <div className="space-y-4">
                             <div className="relative">
-                                <label htmlFor="password" className="block text-sm font-medium text-white mb-1">
+                                <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
                                     Пароль
                                 </label>
                                 <input
@@ -106,11 +116,11 @@ export default function LoginPage() {
                                     value={password}
                                     onChange={(e) => setPassword(e.target.value)}
                                     placeholder="••••••••"
-                                    className="w-full px-4 py-2 rounded-xl bg-neutral-800 border border-neutral-700 text-white focus:outline-none focus:ring-2 focus:ring-lime-400 pr-10 transition"
+                                    className="w-full px-4 py-3 rounded-lg bg-gray-100 text-gray-800 focus:outline-none focus:ring-2 focus:ring-lime-400 pr-10 transition"
                                 />
                                 <button
                                     type="button"
-                                    className="absolute right-3 top-8 text-gray-400 hover:text-lime-400 transition"
+                                    className="absolute right-3 top-10 text-gray-500 hover:text-pink-500 transition"
                                     onClick={() => setShowPassword(!showPassword)}
                                 >
                                     {showPassword ? (
@@ -129,20 +139,28 @@ export default function LoginPage() {
                             <button
                                 onClick={handleLogin}
                                 disabled={isLoading}
-                                className="w-full bg-lime-400 text-black font-bold py-2 rounded-full hover:bg-lime-300 transition"
+                                className="w-full bg-lime-400 text-black font-bold py-3 rounded-lg hover:bg-lime-300 transition flex items-center justify-center"
                             >
-                                {isLoading ? 'Вход...' : 'Войти'}
+                                {isLoading ? (
+                                    <span className="flex items-center">
+                                        <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-black" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                        </svg>
+                                        Вход...
+                                    </span>
+                                ) : 'Войти'}
                             </button>
                         </div>
                     </>
                 )}
 
-                <p className="mt-6 text-center text-sm text-gray-400">
+                <div className="mt-6 text-center text-sm text-gray-500">
                     Нет аккаунта?{' '}
-                    <a href="/register" className="text-lime-400 hover:underline">
+                    <a href="/register" className="text-pink-500 font-medium hover:text-pink-600 transition">
                         Зарегистрироваться
                     </a>
-                </p>
+                </div>
             </div>
         </div>
     );
