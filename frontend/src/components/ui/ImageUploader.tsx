@@ -4,9 +4,10 @@ import { useState } from 'react'
 
 type ImageUploadProps = {
   onUpload: (file: File) => void
+  isPreview?: boolean
 }
 
-export default function ImageUploader({ onUpload }: ImageUploadProps) {
+export default function ImageUploader({ onUpload, isPreview }: ImageUploadProps) {
   const [preview, setPreview] = useState<string | null>(null)
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -25,7 +26,7 @@ export default function ImageUploader({ onUpload }: ImageUploadProps) {
         <input type="file" accept="image/*" onChange={handleFileChange} className="hidden" />
       </label>
 
-      {preview && (
+      {preview && isPreview && (
         <img src={preview} alt="Предпросмотр" className="w-40 h-40 object-cover rounded-xl border" />
       )}
     </div>

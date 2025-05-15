@@ -23,6 +23,27 @@ export async function UploadEventImg(eventId: number, file: File) {
     }
 
     const data = await response.json()
+    return data
+}
 
+export async function avatarUpload(file: File) {
+    const token = getToken()
+    const apiUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
+    const formData = new FormData()
+    formData.append('file', file)
+
+    const response = await fetch(`${apiUrl}/user/profile/avatar`, {
+        method: 'PATCH',
+        headers: {
+            Authorization: `Bearer ${token}`
+        },
+        body: formData
+    })
+
+    if (!response.ok) {
+        throw new Error('Ошибка при загрузке изображения')
+    }
+
+    const data = await response.json()
     return data
 }
