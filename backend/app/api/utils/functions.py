@@ -4,6 +4,7 @@ from fastapi import HTTPException, status, Depends
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from jose import jwt, JWTError
 from api.utils.supabase_client import supabase_client
+import uuid
 
 from config import SECRET_KEY, ALGORITHM, ACCESS_TOKEN_EXPIRE_MINUTES
 
@@ -57,3 +58,20 @@ def check_user_exists(user_id: int):
     if not response.data:
         raise HTTPException(status_code=404, detail="User not found")
 
+def generate_unique_filename(user_id: str, original_filename: str) -> str:
+    """Генерация уникального имени файла"""
+    timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
+    unique_id = uuid.uuid4().hex[:6]
+    file_ext = original_filename.split(".")[-1]
+    return f"{user_id}_{timestamp}_{unique_id}.{file_ext}"
+
+def get_avatar(user_id):
+    """Эндпоинт для получения ссылки на аватар по user_id"""
+    user_data = supabase_client.table('users').select("avatar_url").eq("id", user_id).execute()
+
+    if not user_data.data or not user_data.data[0].get("avatar_url"):
+        return None
+
+    avatar_url = user_data.data[0]["avatar_url"]
+
+    return avatar_url

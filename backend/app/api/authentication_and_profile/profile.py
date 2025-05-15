@@ -1,7 +1,8 @@
 from api.utils.models import ProfileUpdateRequest
-from api.utils.functions import get_current_user_id
-from api.utils.supabase_client import supabase_client
-from fastapi import APIRouter, Depends, HTTPException
+from api.utils.functions import get_current_user_id, get_avatar, generate_unique_filename
+from api.utils.supabase_client import supabase_client, AVATAR_BUCKET
+from fastapi import APIRouter, Depends, HTTPException, UploadFile, File, status
+from fastapi.responses import JSONResponse
 
 profile_router = APIRouter(
     tags=["profile"],
@@ -39,11 +40,11 @@ def delete_profile(user_id: int = Depends(get_current_user_id)):
 def get_profile(user_id: int, current_user_id: int = Depends(get_current_user_id)):
     if user_id != current_user_id:
         result = supabase_client.table("users").select(
-            "first_name, last_name, city, birthday"
+            "first_name, last_name, city, birthday, avatar_url"
         ).eq("id", user_id).execute().data
     else:
         result = supabase_client.table("users").select(
-            "id, email, phone_number, first_name, last_name, city, birthday, tags"
+            "id, email, phone_number, first_name, last_name, city, birthday, tags, avatar_url"
         ).eq("id", user_id).execute().data
 
     if not result:
@@ -78,6 +79,65 @@ def get_profile(user_id: int, current_user_id: int = Depends(get_current_user_id
 
     user_info.pop("hashed_password", None)
     user_info.pop("created_at", None)
-    user_info.pop("avatar_url", None)
 
     return user_info
+
+
+@profile_router.patch("/avatar")
+async def upload_avatar(user_id: int = Depends(get_current_user_id), file: UploadFile = File(...)):
+    """
+    Эндпоинт для загрузки аватара и сохранения ссылки в БД
+
+    Параметры:
+    - user_id: ID пользователя, для которого загружается аватар
+    - file: Файл аватара
+    """
+    try:
+        user_exists = supabase_client.table('users').select("id").eq("id", user_id).execute()
+        if not user_exists.data:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="User not found"
+            )
+
+        filename = generate_unique_filename(user_id, file.filename)
+
+        contents = await file.read()
+
+        if not file.content_type.startswith('image/'):
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Only image files are allowed"
+            )
+
+        supabase_client.storage.from_(AVATAR_BUCKET).upload(
+            file=contents,
+            path=filename,
+            file_options={"content-type": file.content_type}
+        )
+
+        avatar_url = supabase_client.storage.from_(AVATAR_BUCKET).get_public_url(filename)
+
+        update_response = supabase_client.table('users').update(
+            {"avatar_url": avatar_url}
+        ).eq("id", user_id).execute()
+
+        if not update_response.data:
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail="Failed to update user avatar"
+            )
+
+        return JSONResponse({
+            "message": "Avatar uploaded and updated successfully",
+            "avatar_url": avatar_url,
+            "user_id": user_id
+        }, status_code=status.HTTP_200_OK)
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Error uploading avatar: {str(e)}"
+        )
