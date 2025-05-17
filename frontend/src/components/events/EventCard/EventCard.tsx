@@ -163,11 +163,11 @@ export default function EventCard(event: Event) {
                                             className="w-10 h-10 rounded-full border-2 border-black object-cover"
                                         />
                                     ) : (
-                                        <div className="w-10 h-10 bg-black rounded-full flex items-center justify-center text-white text-lg font-bold border-2 border-black">
+                                        <div className="w-10 h-10 bg-black rounded-full flex items-center justify-center text-black text-lg font-bold border-2 border-black">
                                             {friend.first_name[0]}{friend.last_name[0]}
                                         </div>
                                     )}
-                                    <span className="font-medium">{friend.first_name} {friend.last_name}</span>
+                                    <span className="font-medium text-black">{friend.first_name} {friend.last_name}</span>
                                 </Link>
                             ))}
                         </div>

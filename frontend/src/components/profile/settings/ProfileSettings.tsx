@@ -131,7 +131,7 @@ export default function ProfileSettings() {
                                 type={type}
                                 value={(formData as any)[id] ?? ''}
                                 onChange={handleChange}
-                                className="w-full px-4 py-2 bg-neutral-900 border  text-white rounded-2xl focus:ring-2 focus:ring-lime-400"
+                                className="w-full px-4 py-2 bg-neutral-200 text-black rounded-2xl focus:ring-2 focus:ring-lime-400"
                             />
                         </div>
                     ))}
@@ -152,7 +152,7 @@ export default function ProfileSettings() {
                         rows={3}
                         value={formData.bio ?? ''}
                         onChange={handleChange}
-                        className="w-full px-4 py-2 bg-neutral-800 border border-neutral-700 text-white rounded-2xl focus:ring-2 focus:ring-lime-400"
+                        className="w-full px-4 py-2 bg-neutral-200 text-black rounded-2xl focus:ring-2 focus:ring-lime-400"
                     />
                 </div>
 
@@ -164,7 +164,7 @@ export default function ProfileSettings() {
                         className={`flex items-center gap-2 px-6 py-3 rounded-2xl font-medium transition-colors ${
                             hasChanges
                                 ? 'bg-lime-400 text-black hover:bg-lime-300'
-                                : 'bg-neutral-800 text-gray-500 cursor-not-allowed'
+                                : 'bg-neutral-200 text-black cursor-not-allowed'
                         }`}
                     >
                         <FiSave/>

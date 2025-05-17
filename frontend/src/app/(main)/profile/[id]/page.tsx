@@ -24,6 +24,8 @@ export default async function ProfilePage({params}: { params: { id: string } }) 
     if (!userData) {
         return <div className="text-black">Пользователь не найден</div>;
     }
+
+    console.log(userData)
     return (
         <div className="min-h-screen bg-white">
             {/* Шапка профиля */}

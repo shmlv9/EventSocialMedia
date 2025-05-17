@@ -43,7 +43,7 @@ export default function EventsFeed({
         setActiveFilter(filter);
         onFilterChange?.(filter);
     };
-
+    console.log(events)
     return (
         <div className="w-full max-w-6xl mx-auto sm:px-6">
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8 ml-2">
@@ -55,7 +55,7 @@ export default function EventsFeed({
                             onClick={() => handleFilterChange(filter as FilterType)}
                             className={`px-4 py-2 rounded-full text-sm font-medium transition-colors duration-300 ${
                                 activeFilter === filter
-                                    ? 'bg-lime-400 text-black shadow-inner'
+                                    ? 'bg-pink-400 text-black shadow-inner'
                                     : 'bg-neutral-800 text-gray-300 hover:bg-neutral-700 border border-neutral-700'
                             }`}
                         >

@@ -7,7 +7,7 @@ type ImageUploadProps = {
   isPreview?: boolean
 }
 
-export default function ImageUploader({ onUpload, isPreview }: ImageUploadProps) {
+export default function ImageUploader({ onUpload, isPreview=true }: ImageUploadProps) {
   const [preview, setPreview] = useState<string | null>(null)
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {

@@ -26,7 +26,6 @@ export default function EventsPage() {
         } finally {
         }
     };
-
     return (
         <div className="container mx-auto py-8">
             <EventsFeed
