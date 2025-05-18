@@ -19,3 +19,12 @@ def search_users(
     ).execute().data
 
     return {"results": response}
+
+
+@search_router.get("/groups/")
+def search_groups(
+        query: str = Query(..., min_length=1),
+        _: int = Depends(get_current_user_id)):
+    results = supabase_client.table("groups").select("*") \
+        .ilike("name", f"{query}%").execute().data
+    return results

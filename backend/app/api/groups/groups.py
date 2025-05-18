@@ -1,9 +1,11 @@
-from fastapi import APIRouter, Depends, HTTPException
 from datetime import datetime
 from typing import List
-from api.utils.supabase_client import supabase_client
+
+from api.events.events import get_event
 from api.utils.functions import get_current_user_id, check_user_exists
 from api.utils.models import GroupCreate, GroupUpdate
+from api.utils.supabase_client import supabase_client
+from fastapi import APIRouter, Depends, HTTPException
 
 groups_router = APIRouter(prefix="/groups", tags=["groups"])
 
@@ -15,15 +17,6 @@ def check_group_exists(group_id: int):
     return group[0]
 
 
-@groups_router.get("/search", response_model=List[dict])
-def search_groups(query: str, user_id: int = Depends(get_current_user_id)):
-    check_user_exists(user_id)
-
-    results = supabase_client.table("groups").select("*") \
-        .ilike("name", f"%{query}%").execute().data
-    return results
-
-
 @groups_router.post("/", response_model=dict)
 def create_group(group: GroupCreate, user_id: int = Depends(get_current_user_id)):
     check_user_exists(user_id)
@@ -31,6 +24,7 @@ def create_group(group: GroupCreate, user_id: int = Depends(get_current_user_id)
     new_group = supabase_client.table("groups").insert({
         "name": group.name,
         "description": group.description,
+        "location": group.location,
         "tags": group.tags,
         "avatar_url": group.avatar_url,
         "creator_id": user_id,
@@ -51,11 +45,13 @@ def get_group(group_id: int, user_id: int = Depends(get_current_user_id)):
     check_user_exists(user_id)
     check_group_exists(group_id)
 
-    response = (supabase_client.table("groups")
+    response = (
+        supabase_client.table("groups")
         .select("*, users(id, first_name, last_name, avatar_url)")
         .eq("id", group_id)
         .single()
-        .execute())
+        .execute()
+    )
 
     if not response.data:
         raise HTTPException(status_code=404, detail="Group not found")
@@ -63,6 +59,63 @@ def get_group(group_id: int, user_id: int = Depends(get_current_user_id)):
     data = response.data
     creator_info = data.pop("users", {})
     data["creator"] = creator_info
+
+    members_response = (
+        supabase_client.table("group_members")
+        .select("id", count="exact")
+        .eq("group_id", group_id)
+        .execute()
+    )
+    data["members_count"] = members_response.count or 0
+
+    events_response = (
+        supabase_client.table("events")
+        .select("id", count="exact")
+        .eq("by_group", True)
+        .eq("sponsor_id", group_id)
+        .execute()
+    )
+    data["events_count"] = events_response.count or 0
+
+    if data["creator_id"] == user_id:
+        data["status"] = "creator"
+    else:
+        membership_response = (
+            supabase_client.table("group_members")
+            .select("is_admin")
+            .eq("group_id", group_id)
+            .eq("user_id", user_id)
+            .execute()
+        )
+        if membership_response.data:
+            if membership_response.data[0]["is_admin"]:
+                data["status"] = "admin"
+            else:
+                data["status"] = "member"
+        else:
+            data["status"] = None
+
+    admins_response = (
+        supabase_client.table("group_members")
+        .select("user_id")
+        .eq("group_id", group_id)
+        .eq("is_admin", True)
+        .execute()
+    )
+
+    admin_ids = [admin["user_id"] for admin in admins_response.data]
+
+    if admin_ids:
+        users_response = (
+            supabase_client.table("users")
+            .select("id, first_name, last_name, avatar_url")
+            .in_("id", admin_ids)
+            .execute()
+        )
+        data["admins"] = users_response.data
+    else:
+        data["admins"] = []
+
     return data
 
 
@@ -144,8 +197,15 @@ def get_group_members(group_id: int, user_id: int = Depends(get_current_user_id)
     check_group_exists(group_id)
 
     members = (supabase_client.table("group_members")
-               .select("user_id, is_admin, users(id, first_name, last_name, avatar_url)") \
-        .eq("group_id", group_id).execute().data)
+               .select("user_id, is_admin, users(id, first_name, last_name, avatar_url)")
+               .eq("group_id", group_id)
+               .execute().data)
+
+    for member in members:
+        user_data = member.pop("users", {})
+        member.update(user_data)
+        member.pop("id", None)
+
     return members
 
 
@@ -181,3 +241,32 @@ def get_user_groups(target_user_id: int, user_id: int = Depends(get_current_user
     groups = supabase_client.table("group_members").select("group_id, groups(*)") \
         .eq("user_id", target_user_id).execute().data
     return [g["groups"] for g in groups if g.get("groups")]
+
+
+@groups_router.get("/{group_id}/events")
+def get_group_events(group_id: int, user_id: int = Depends(get_current_user_id)):
+    try:
+        response = (
+            supabase_client.table("events")
+            .select("id")
+            .eq("by_group", True)
+            .eq("sponsor_id", group_id)
+            .execute()
+        )
+
+        if not response.data:
+            return []
+
+        event_ids = [event["id"] for event in response.data]
+
+        events = []
+        for event_id in event_ids:
+            try:
+                event_data = get_event(event_id, user_id)
+                events.append(event_data)
+            except HTTPException:
+                continue
+        return events
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))

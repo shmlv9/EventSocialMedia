@@ -42,12 +42,14 @@ class EventCreateRequest(BaseModel):
     start_timestamptz: datetime
     end_timestamptz: datetime
     tags: List[str]
+    by_group: bool
 
 
 class GroupCreate(BaseModel):
     name: str
     description: Optional[str] = None
     tags: Optional[List[str]] = None
+    location: Optional[str] = None
     avatar_url: Optional[str] = None
 
 

@@ -1,14 +1,9 @@
 from typing import Literal
-import supabase
 
 from api.utils.functions import get_current_user_id
 from api.utils.models import EventCreateRequest
 from api.utils.supabase_client import supabase_client
-from fastapi import APIRouter, Query, Form, File, UploadFile, HTTPException, Depends
-from datetime import datetime
-from typing import Optional, List
-import uuid
-import json
+from fastapi import APIRouter, Query, File, UploadFile, HTTPException, Depends
 
 events_router = APIRouter(
     prefix='/events',
@@ -17,7 +12,7 @@ events_router = APIRouter(
 
 
 @events_router.get('/tags')
-async def get_tags(user_id: int = Depends(get_current_user_id)):
+async def get_tags(_: int = Depends(get_current_user_id)):
     response = supabase_client.table("tags") \
         .select("tag") \
         .execute().data
@@ -38,7 +33,8 @@ def create_event(event: EventCreateRequest, sponsor_id: int = Depends(get_curren
         "end_timestamptz": event.end_timestamptz.isoformat(),
         "sponsor_id": sponsor_id,
         "tags": event.tags,
-        "participants": [sponsor_id]
+        "participants": [sponsor_id],
+        "by_group": event.by_group
     }).execute()
 
     if response.data is None:
@@ -133,13 +129,55 @@ def get_filtered_events(
 @events_router.get("/{event_id}")
 def get_event(event_id: int, user_id: int = Depends(get_current_user_id)):
     try:
-        event = supabase_client.table("events").select("*",
-                                                       "organizer:sponsor_id(id, first_name, last_name, avatar_url)").eq(
-            "id", event_id).execute().data[0]
-        if not event:
+        response = supabase_client.table("events").select("*").eq("id", event_id).execute()
+        if not response.data:
             raise HTTPException(status_code=404, detail="Event not found")
 
-        return {'event': event}
+        event = response.data[0]
+
+        if event.get("by_group"):
+            group_id = event.get("sponsor_id")
+
+            group_data = (
+                supabase_client.table("groups")
+                .select("id, name, avatar_url")
+                .eq("id", group_id)
+                .single()
+                .execute()
+            )
+
+            if not group_data.data:
+                raise HTTPException(status_code=404, detail="Group not found")
+
+            organizer = group_data.data
+
+        else:
+            sponsor_id = event.get("sponsor_id")
+            user_data = (
+                supabase_client.table("users")
+                .select("id, first_name, last_name, avatar_url")
+                .eq("id", sponsor_id)
+                .single()
+                .execute()
+            )
+
+            if not user_data.data:
+                raise HTTPException(status_code=404, detail="User not found")
+
+            user = user_data.data
+            organizer = {
+                "id": user["id"],
+                "name": f"{user['first_name']} {user['last_name']}",
+                "avatar_url": user.get("avatar_url")
+            }
+
+        return {
+            "event": event,
+            "organizer": organizer
+        }
+
+    except HTTPException:
+        raise
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
