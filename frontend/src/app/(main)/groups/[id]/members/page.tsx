@@ -43,21 +43,6 @@ export default function GroupMembersPage({params}: { params: Promise<{ id: strin
         getMembers()
     }, [groupId])
 
-    // Mock request data
-    const requests: Request[] = [
-        {
-            id: '4',
-            first_name: 'Елена',
-            last_name: 'Смирнова',
-            avatar_url: '/user3.jpg'
-        },
-        {
-            id: '5',
-            first_name: 'Дмитрий',
-            last_name: 'Кузнецов',
-            avatar_url: null
-        }
-    ]
 
     const filteredMembers = members.filter(member =>
         `${member.first_name} ${member.last_name}`.toLowerCase().includes(searchQuery.toLowerCase())
@@ -94,7 +79,7 @@ export default function GroupMembersPage({params}: { params: Promise<{ id: strin
                     onClick={() => setActiveTab('requests')}
                 >
                     <FiUserPlus className="mr-2"/>
-                    Заявки ({requests.length})
+                    Заявки ()
                 </button>
             </div>
 

@@ -40,3 +40,19 @@ export async function fetchMembers(id: string) {
     if (!response.ok) return null;
     return response.json();
 }
+
+export async function fetchGroups() {
+    const response = await apiFetchClient(`/groups/`, {
+        method: 'GET',
+    });
+    if (!response.ok) return null;
+    return response.json();
+}
+
+export async function fetchGroupsUser(id: string) {
+    const response = await apiFetchClient(`/groups/user/${id}`, {
+        method: 'GET',
+    });
+    if (!response.ok) return null;
+    return response.json();
+}

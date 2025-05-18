@@ -5,12 +5,13 @@ import ClientWrapper from '@/context/ClientWrapper';
 import Link from 'next/link';
 import React from 'react';
 import {FaHome, FaComments, FaUser} from 'react-icons/fa';
-import {MdExplore} from 'react-icons/md';
+import {MdExplore, MdGroups} from 'react-icons/md';
 
 
 const desktopNavLinks = [
     {href: '/events', icon: <FaHome/>, label: 'Главная'},
     {href: '/explore', icon: <MdExplore/>, label: 'Поиск'},
+    {href: '/groups', icon: <MdGroups/>, label: 'Группы'},
     {href: (userID: string) => `/profile/${userID}`, icon: <FaUser/>, label: 'Профиль'},
 ];
 
@@ -18,6 +19,7 @@ const desktopNavLinks = [
 const mobileNavLinks = [
     {href: '/events', icon: <FaHome/>, label: 'Главная'},
     {href: '/explore', icon: <MdExplore/>, label: 'Поиск'},
+    {href: '/groups', icon: <MdGroups/>, label: 'Группы'},
     {href: (userID: string) => `/profile/${userID}`, icon: <FaUser/>, label: 'Профиль'},
 ];
 

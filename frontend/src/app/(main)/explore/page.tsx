@@ -44,7 +44,6 @@ export default function UniversalSearch() {
 
             const res = await apiFetchClient(endpoint, { method: 'GET' })
             const data = await res.json()
-            console.log(data)
             setResults(data)
         } catch (err) {
             setError('Произошла ошибка при поиске')
@@ -141,7 +140,7 @@ export default function UniversalSearch() {
                             {item.avatar_url ? (
                                 <img
                                     src={item.avatar_url}
-                                    alt={'avatar_url' in item ? `${item.first_name} ${item.last_name}` : item.name}
+                                    alt={''}
                                     className="w-12 h-12 rounded-full border-2 border-white shadow-sm"
                                 />
                             ) : (
