@@ -4,7 +4,7 @@ import { useState } from 'react'
 import { apiFetchClient } from "@/lib/api/apiFetchClient"
 import { useRouter } from "next/navigation"
 import toast from 'react-hot-toast'
-import { FiSearch, FiUser, FiX } from 'react-icons/fi'
+import { FiSearch, FiUser, FiUsers, FiX } from 'react-icons/fi'
 
 type User = {
     id: number
@@ -13,16 +13,24 @@ type User = {
     avatar_url: string | null
 }
 
-export default function UserSearch() {
+type Group = {
+    id: number
+    name: string
+    avatar_url: string | null
+    members_count: number
+}
+
+export default function UniversalSearch() {
     const router = useRouter()
     const [query, setQuery] = useState('')
-    const [results, setResults] = useState<User[] | null>(null)
+    const [searchType, setSearchType] = useState<'users' | 'groups'>('users')
+    const [results, setResults] = useState<(User | Group)[] | null>(null)
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState<string | null>(null)
 
     const handleSearch = async () => {
         if (!query.trim()) {
-            toast.error('Введите имя для поиска')
+            toast.error('Введите поисковый запрос')
             return
         }
 
@@ -30,12 +38,17 @@ export default function UserSearch() {
         setError(null)
 
         try {
-            const res = await apiFetchClient(`/search/users/?query=${query.trim()}`, { method: 'GET' })
+            const endpoint = searchType === 'users'
+                ? `/search/users/?query=${query.trim()}`
+                : `/search/groups/?query=${query.trim()}`
+
+            const res = await apiFetchClient(endpoint, { method: 'GET' })
             const data = await res.json()
-            setResults(data.results)
+            console.log(data)
+            setResults(data)
         } catch (err) {
             setError('Произошла ошибка при поиске')
-            toast.error('Ошибка при поиске пользователей')
+            toast.error('Ошибка при поиске')
         } finally {
             setLoading(false)
         }
@@ -46,14 +59,34 @@ export default function UserSearch() {
         setResults(null)
     }
 
-    const handleRedirect = (id: string) => {
-        router.push(`/profile/${id}`)
+    const handleRedirect = (id: string, type: 'users' | 'groups') => {
+        router.push(type === 'users' ? `/profile/${id}` : `/groups/${id}`)
     }
+
 
     return (
         <div className="p-6 bg-white rounded-3xl shadow-lg border border-gray-200">
-            <h2 className="text-2xl font-bold mb-6 text-black">Поиск пользователей</h2>
+            <h2 className="text-2xl font-bold mb-6 text-black">Поиск</h2>
 
+            {/* Type selector */}
+            <div className="flex mb-4 border-b border-gray-200">
+                <button
+                    className={`flex-1 py-2 font-medium flex items-center justify-center ${searchType === 'users' ? 'text-lime-500 border-b-2 border-lime-500' : 'text-gray-600'}`}
+                    onClick={() => setSearchType('users')}
+                >
+                    <FiUser className="mr-2" />
+                    Пользователи
+                </button>
+                <button
+                    className={`flex-1 py-2 font-medium flex items-center justify-center ${searchType === 'groups' ? 'text-lime-500 border-b-2 border-lime-500' : 'text-gray-600'}`}
+                    onClick={() => setSearchType('groups')}
+                >
+                    <FiUsers className="mr-2" />
+                    Группы
+                </button>
+            </div>
+
+            {/* Search input */}
             <div className="relative flex gap-2 mb-4">
                 <div className="relative flex-1">
                     <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
@@ -61,7 +94,7 @@ export default function UserSearch() {
                         type="text"
                         value={query}
                         onChange={e => setQuery(e.target.value)}
-                        placeholder="Введите имя или фамилию"
+                        placeholder={searchType === 'users' ? 'Введите имя или фамилию' : 'Введите название группы'}
                         className="w-full pl-10 pr-10 py-3 bg-gray-50 border border-gray-200 text-black rounded-3xl focus:ring-2 focus:ring-lime-400 focus:border-transparent"
                         onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
                     />
@@ -99,28 +132,36 @@ export default function UserSearch() {
 
             {results && results.length > 0 && (
                 <ul className="mt-4 space-y-3">
-                    {results.map(user => (
+                    {results.map(item => (
                         <div
-                            key={user.id}
+                            key={item.id}
                             className="flex items-center gap-4 p-4 bg-white hover:bg-gray-50 rounded-3xl transition cursor-pointer border border-gray-200"
-                            onClick={() => handleRedirect(user.id.toString())}
+                            onClick={() => handleRedirect(item.id.toString(), searchType)}
                         >
-                            {user.avatar_url ? (
+                            {item.avatar_url ? (
                                 <img
-                                    src={user.avatar_url}
-                                    alt={`${user.first_name} ${user.last_name}`}
+                                    src={item.avatar_url}
+                                    alt={'avatar_url' in item ? `${item.first_name} ${item.last_name}` : item.name}
                                     className="w-12 h-12 rounded-full border-2 border-white shadow-sm"
                                 />
                             ) : (
                                 <div className="w-12 h-12 rounded-full bg-blue-600 flex items-center justify-center text-white text-lg font-bold border-2 border-white">
-                                    {user.first_name[0]}{user.last_name[0]}
+                                    {'first_name' in item
+                                        ? `${item.first_name[0]}${item.last_name[0]}`
+                                        : item.name[0]}
                                 </div>
                             )}
                             <div>
                                 <p className="font-medium text-black">
-                                    {user.first_name} {user.last_name}
+                                    {'first_name' in item
+                                        ? `${item.first_name} ${item.last_name}`
+                                        : item.name}
                                 </p>
-                                <p className="text-sm text-gray-500">ID: {user.id}</p>
+                                <p className="text-sm text-gray-500">
+                                    {searchType === 'groups' && 'members_count' in item
+                                        ? `${item.members_count} участников`
+                                        : `ID: ${item.id}`}
+                                </p>
                             </div>
                         </div>
                     ))}
@@ -129,8 +170,8 @@ export default function UserSearch() {
 
             {results && results.length === 0 && !loading && (
                 <div className="flex flex-col items-center justify-center py-8 text-gray-500">
-                    <FiUser className="text-4xl mb-2" />
-                    <p>Пользователи не найдены</p>
+                    {searchType === 'users' ? <FiUser className="text-4xl mb-2" /> : <FiUsers className="text-4xl mb-2" />}
+                    <p>{searchType === 'users' ? 'Пользователи не найдены' : 'Группы не найдены'}</p>
                     <p className="text-sm mt-1">Попробуйте изменить запрос</p>
                 </div>
             )}

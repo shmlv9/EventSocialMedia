@@ -18,7 +18,7 @@ def search_users(
         f"first_name.ilike.{query}%,last_name.ilike.{query}%"
     ).execute().data
 
-    return {"results": response}
+    return response
 
 
 @search_router.get("/groups/")
