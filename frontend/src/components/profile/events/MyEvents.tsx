@@ -1,5 +1,5 @@
 import React from 'react';
-import {fetchEventUserCreated, fetchEventUserParticipants} from "@/lib/api/apiEvents";
+import {fetchEventUserCreated, fetchEventUserParticipants} from "@/lib/api/events/apiEvents";
 import EventsMenu from "@/components/profile/events/EventsMenu";
 
 

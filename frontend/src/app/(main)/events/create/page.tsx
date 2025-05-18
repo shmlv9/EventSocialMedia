@@ -4,7 +4,7 @@ import {useState} from 'react'
 import {FaPlusCircle, FaTimes} from 'react-icons/fa'
 import {useRouter} from 'next/navigation'
 import toast from "react-hot-toast"
-import {createEvent} from "@/lib/api/apiEvents"
+import {createEvent} from "@/lib/api/events/apiEvents"
 import ImageUploader from "@/components/ui/ImageUploader"
 import {UploadEventImg} from "@/lib/api/apiImage"
 import TagSelect from "@/components/ui/TagSelect"

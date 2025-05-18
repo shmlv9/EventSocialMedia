@@ -2,7 +2,7 @@
 
 import {useState} from 'react';
 import SelectMethod from "@/components/auth/SelectMethod";
-import {checkLogin, checkUserExists} from "@/lib/api/apiAuth";
+import {checkLogin, checkUserExists} from "@/lib/api/auth/apiAuth";
 import {validateEmail, validatePhone} from "@/utils/validation";
 import {useRouter} from "next/navigation";
 import toast from "react-hot-toast";

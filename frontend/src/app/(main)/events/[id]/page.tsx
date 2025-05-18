@@ -1,5 +1,5 @@
 import React from 'react';
-import {fetchEvent} from "@/lib/api/apiEvents";
+import {fetchEvent} from "@/lib/api/events/apiEvents";
 import EventCard from "@/components/events/EventCard/EventCard";
 
 export default async function Event({params}: { params: { id: string } }) {

@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react'
 import UtcDateTimePicker from "@/components/ui/DateTimePicker/UtcDateTimePicker"
-import { deleteEvent, fetchEventClient, updateEvent } from "@/lib/api/apiEvents"
+import { deleteEvent, fetchEventClient, updateEvent } from "@/lib/api/events/apiEvents"
 import TagSelect from "@/components/ui/TagSelect"
 import { FaSave, FaTrash } from 'react-icons/fa'
 import { useRouter } from "next/navigation"

@@ -2,7 +2,7 @@
 
 import EventsFeed from '@/components/events/feed/EventsFeed';
 import {useState} from 'react';
-import {fetchEvents} from "@/lib/api/apiEvents";
+import {fetchEvents} from "@/lib/api/events/apiEvents";
 import toast from 'react-hot-toast';
 
 type FilterType = 'recommendations' | 'friends' | 'groups';

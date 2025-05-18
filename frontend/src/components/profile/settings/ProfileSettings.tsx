@@ -3,7 +3,7 @@
 import React, {useEffect, useState} from 'react'
 import {FiUser, FiSave} from 'react-icons/fi'
 import {useUser} from '@/context/userContext'
-import {fetchProfileClient, updateProfile} from '@/lib/api/apiUser'
+import {fetchProfileClient, updateProfile} from '@/lib/api/users/apiUser'
 import toast from 'react-hot-toast'
 import PrettyDatePicker from '@/components/ui/DateTimePicker/DatePick'
 import ImageUploader from "@/components/ui/ImageUploader"

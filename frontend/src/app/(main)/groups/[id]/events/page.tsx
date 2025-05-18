@@ -1,9 +1,9 @@
 import React from 'react';
 
-export default function GroupsPage() {
+export default function GroupEventsPage() {
     return (
         <div>
-            groups
+            Events Group
         </div>
     );
 };

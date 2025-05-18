@@ -1,4 +1,4 @@
-import {fetchFriends, fetchFriendsRequests} from "@/lib/api/apiFriends"
+import {fetchFriends, fetchFriendsRequests} from "@/lib/api/users/apiFriends"
 import FriendsMenu from "@/components/profile/friends/FriendsMenu";
 
 type FriendsPageProps = {

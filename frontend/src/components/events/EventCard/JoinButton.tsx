@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react'
 import toast from 'react-hot-toast'
-import { joinEvent, leaveEvent } from "@/lib/api/apiEvents"
+import { joinEvent, leaveEvent } from "@/lib/api/events/apiEvents"
 import { FiCheck, FiPlus } from 'react-icons/fi'
 
 export default function JoinButton({ isJoined, id }: { isJoined: boolean, id: string }) {

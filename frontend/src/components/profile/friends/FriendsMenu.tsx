@@ -4,7 +4,7 @@ import React, {useState, useMemo} from 'react';
 import {FiSearch, FiUserPlus, FiUserCheck, FiUserX} from 'react-icons/fi';
 import {GrCheckmark} from 'react-icons/gr';
 import {RxCross1} from 'react-icons/rx';
-import {acceptRequest, deleteFriend, rejectRequest} from "@/lib/api/apiFriends";
+import {acceptRequest, deleteFriend, rejectRequest} from "@/lib/api/users/apiFriends";
 import toast from 'react-hot-toast';
 import {useRouter} from 'next/navigation'
 import {useUser} from "@/context/userContext";

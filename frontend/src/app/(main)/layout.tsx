@@ -1,6 +1,6 @@
 import {cookies} from 'next/headers';
 import {redirect} from 'next/navigation';
-import {fetchID} from '@/lib/api/apiUser';
+import {fetchID} from '@/lib/api/users/apiUser';
 import ClientWrapper from '@/context/ClientWrapper';
 import Link from 'next/link';
 import React from 'react';

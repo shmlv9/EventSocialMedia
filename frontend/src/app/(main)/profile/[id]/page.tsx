@@ -1,6 +1,6 @@
 import {CiLocationOn, CiCalendar} from "react-icons/ci";
 import {FiChevronRight} from "react-icons/fi";
-import {fetchID, fetchProfile} from "@/lib/api/apiUser";
+import {fetchID, fetchProfile} from "@/lib/api/users/apiUser";
 import Link from "next/link";
 import {cookies} from "next/headers";
 import {redirect} from "next/navigation";

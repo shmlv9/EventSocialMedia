@@ -2,7 +2,7 @@
 
 import React, {useEffect, useState} from 'react';
 import {toast} from 'react-hot-toast';
-import {fetchProfileClient, updateProfile} from "@/lib/api/apiUser";
+import {fetchProfileClient, updateProfile} from "@/lib/api/users/apiUser";
 import {useUser} from "@/context/userContext";
 
 export default function TagSelector() {

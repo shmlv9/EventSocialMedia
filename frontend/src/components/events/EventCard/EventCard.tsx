@@ -16,8 +16,7 @@ type Participant = {
 
 type Organizer = {
     id: number;
-    first_name: string;
-    last_name: string;
+    name: string;
     avatar_url: string | null;
 };
 
@@ -32,6 +31,7 @@ type Event = {
     friends_participants?: Participant[];
     image: string | null;
     tags: string[];
+    by_group: boolean;
     organizer: Organizer;
 };
 
@@ -57,10 +57,13 @@ export default function EventCard(event: Event) {
 
     const participantsCount = event.participants?.length || 0;
     const friendsCount = event.friends_participants?.length || 0;
-    const isJoined: boolean = event.participants.includes(Number(userID));
+    const isJoined
+        :
+        boolean = event.participants.includes(Number(userID));
 
     return (
-        <div className="bg-white rounded-3xl shadow-xl overflow-hidden border border-gray-200 mb-8 w-full max-w-2xl hover:shadow-2xl transition-all duration-300">
+        <div
+            className="bg-white rounded-3xl shadow-xl overflow-hidden border border-gray-200 mb-8 w-full max-w-2xl hover:shadow-2xl transition-all duration-300">
             {/* Изображение (увеличенная область) */}
             <div className="relative h-80 bg-gray-100">
                 {event.image ? (
@@ -100,15 +103,19 @@ export default function EventCard(event: Event) {
 
                     <div className="flex flex-wrap gap-4 mt-3">
                         <div className="flex items-center text-gray-700">
-                            <svg className="w-5 h-5 mr-2 text-lime-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                            <svg className="w-5 h-5 mr-2 text-lime-500" fill="none" viewBox="0 0 24 24"
+                                 stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+                                      d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
                             </svg>
                             <span>{startDate}</span>
                         </div>
 
                         <div className="flex items-center text-gray-700">
-                            <svg className="w-5 h-5 mr-2 text-lime-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                            <svg className="w-5 h-5 mr-2 text-lime-500" fill="none" viewBox="0 0 24 24"
+                                 stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+                                      d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
                             </svg>
                             <span>{endDate}</span>
                         </div>
@@ -163,11 +170,13 @@ export default function EventCard(event: Event) {
                                             className="w-10 h-10 rounded-full border-2 border-black object-cover"
                                         />
                                     ) : (
-                                        <div className="w-10 h-10 bg-black rounded-full flex items-center justify-center text-black text-lg font-bold border-2 border-black">
+                                        <div
+                                            className="w-10 h-10 bg-black rounded-full flex items-center justify-center text-black text-lg font-bold border-2 border-black">
                                             {friend.first_name[0]}{friend.last_name[0]}
                                         </div>
                                     )}
-                                    <span className="font-medium text-black">{friend.first_name} {friend.last_name}</span>
+                                    <span
+                                        className="font-medium text-black">{friend.first_name} {friend.last_name}</span>
                                 </Link>
                             ))}
                         </div>
@@ -176,14 +185,17 @@ export default function EventCard(event: Event) {
 
                 {/* Описание */}
                 <div className="mb-6">
-                    <DescriptionMenu description={event.description} />
+                    <DescriptionMenu description={event.description}/>
                 </div>
 
                 {/* Место проведения */}
                 <div className="flex items-start gap-3 mb-6 p-4 bg-gray-50 rounded-xl">
-                    <svg className="flex-shrink-0 w-6 h-6 text-lime-500 mt-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+                    <svg className="flex-shrink-0 w-6 h-6 text-lime-500 mt-1" fill="none" viewBox="0 0 24 24"
+                         stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+                              d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+                              d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
                     </svg>
                     <div>
                         <h4 className="font-bold text-lg text-black mb-1">Место проведения</h4>
@@ -192,7 +204,8 @@ export default function EventCard(event: Event) {
                 </div>
 
                 {/* Организатор и кнопка */}
-                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 pt-4 border-t border-gray-200">
+                <div
+                    className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 pt-4 border-t border-gray-200">
                     <div className="flex items-center gap-3">
                         {event.organizer.avatar_url ? (
                             <img
@@ -201,22 +214,23 @@ export default function EventCard(event: Event) {
                                 className="w-12 h-12 rounded-full border-2 border-black object-cover"
                             />
                         ) : (
-                            <div className="w-12 h-12 bg-black rounded-full flex items-center justify-center text-white text-xl font-bold border-2 border-black">
-                                {event.organizer.first_name[0]}
+                            <div
+                                className="w-12 h-12 bg-black rounded-full flex items-center justify-center text-white text-xl font-bold border-2 border-black">
+                                {event.organizer.name}
                             </div>
                         )}
                         <div>
                             <p className="text-sm text-gray-500">Организатор</p>
                             <Link
-                                href={`/profile/${event.organizer.id}`}
+                                href={event.by_group ? `/groups/${event.organizer.id}` : `/profile/${event.organizer.id}`}
                                 className="font-bold text-black hover:text-lime-500 transition-colors"
                             >
-                                {event.organizer.first_name} {event.organizer.last_name}
+                                {event.organizer.name}
                             </Link>
                         </div>
                     </div>
 
-                    <JoinButton isJoined={isJoined} id={String(event.id)} />
+                    <JoinButton isJoined={isJoined} id={String(event.id)}/>
                 </div>
             </div>
         </div>

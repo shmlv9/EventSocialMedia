@@ -3,7 +3,7 @@
 import {useState} from 'react';
 import {validateEmail, validatePhone} from "@/utils/validation";
 import {useRouter} from "next/navigation";
-import {registerUser} from "@/lib/api/apiAuth";
+import {registerUser} from "@/lib/api/auth/apiAuth";
 import toast from "react-hot-toast";
 import PrettyDatePicker from "@/components/ui/DateTimePicker/DatePick";
 
