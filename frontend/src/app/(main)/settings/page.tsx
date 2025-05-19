@@ -1,5 +1,5 @@
 import SettingsMenu from "@/components/profile/settings/SettingMenu";
-import ProfileButton from "@/components/profile/settings/ProfileButton";
+import ProfileUserButton from "@/components/profile/settings/ProfileUserButton";
 
 export default function SettingsPage() {
 
@@ -9,7 +9,7 @@ export default function SettingsPage() {
             <div>
                 <div className="flex justify-between items-center mb-6">
                     <h1 className="text-3xl font-bold text-white">Настройки</h1>
-                    <ProfileButton/>
+                    <ProfileUserButton/>
                 </div>
 
                 <div className="rounded-3xl min-h-96">

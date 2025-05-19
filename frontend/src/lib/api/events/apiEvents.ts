@@ -19,7 +19,7 @@ export async function updateEvent(id: string, data: object) {
     console.log(data)
     const response = await apiFetchClient(`/events/${id}/`, {
         method: 'PATCH',
-                body: {
+        body: {
             body: JSON.stringify(data)
         }
     })

@@ -161,9 +161,9 @@ export default function ProfileSettings() {
                     <button
                         type="submit"
                         disabled={!hasChanges}
-                        className={`flex items-center gap-2 px-6 py-3 rounded-2xl font-medium transition-colors ${
+                        className={`flex items-center gap-2 px-6 py-3 rounded-3xl font-medium transition-colors ${
                             hasChanges
-                                ? 'bg-lime-400 text-black hover:bg-lime-300'
+                                ? 'bg-lime-400 text-black hover:bg-lime-300 ursor-pointer'
                                 : 'bg-neutral-200 text-black cursor-not-allowed'
                         }`}
                     >

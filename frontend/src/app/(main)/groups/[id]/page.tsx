@@ -3,8 +3,8 @@ import {MdOutlinePhotoLibrary} from 'react-icons/md'
 import {CiLocationOn, CiCalendar} from "react-icons/ci"
 import Link from "next/link"
 import JoinGroupButton from "@/components/groups/JoinGroupButton";
-import SettingsGroupButton from "@/components/groups/settings/SettingsGroupButton";
 import {fetchGroup} from "@/lib/api/groups/apiGroup";
+import SettingsGroupButton from '@/components/groups/settings/SettingsGroupButton';
 
 type Admin = {
     id: string,
@@ -108,7 +108,7 @@ export default async function GroupPage({params}: { params: { id: string } }) {
                         </div>}
                     {(groupData.status === 'admin' || groupData.status === 'creator') &&
                         <div className="flex gap-2 flex-wrap">
-                            <SettingsGroupButton
+                                <SettingsGroupButton
                                 groupId={id}
                             />
                         </div>}

@@ -2,26 +2,34 @@
 
 import EventCard from "@/components/events/EventCard/EventCard";
 import Link from "next/link";
-import { useState } from "react";
+import {useState} from "react";
+
+type Participant = {
+    id: number;
+    first_name: string;
+    last_name: string;
+    avatar_url: string | null;
+};
+
+type Organizer = {
+    id: number;
+    name: string;
+    avatar_url: string | null;
+};
 
 type Event = {
     id: number;
     title: string;
     description: string;
-    location: string;
     start_timestamptz: string;
     end_timestamptz: string;
-    sponsor_id: number;
-    tags: string[];
+    location: string;
     participants: number[];
-    created_at: string;
+    friends_participants?: Participant[];
     image: string | null;
-    organizer: {
-        id: number;
-        first_name: string;
-        last_name: string;
-        avatar_url: string | null;
-    };
+    tags: string[];
+    by_group: boolean;
+    organizer: Organizer;
 };
 
 type FilterType = 'recommendations' | 'friends' | 'groups';
@@ -33,10 +41,10 @@ type EventsFeedProps = {
 };
 
 export default function EventsFeed({
-    events,
-    onFilterChange,
-    initialFilter = 'recommendations',
-}: EventsFeedProps) {
+                                       events,
+                                       onFilterChange,
+                                       initialFilter = 'recommendations',
+                                   }: EventsFeedProps) {
     const [activeFilter, setActiveFilter] = useState<FilterType>(initialFilter);
 
     const handleFilterChange = (filter: FilterType) => {

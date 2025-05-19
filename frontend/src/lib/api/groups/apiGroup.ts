@@ -9,6 +9,14 @@ export async function fetchGroup(id: string) {
     return response.json();
 }
 
+export async function fetchGroupClient(id: string) {
+    const response = await apiFetchClient(`/groups/${id}`, {
+        method: 'GET',
+    });
+    if (!response.ok) return null;
+    return response.json();
+}
+
 export async function fetchEventsGroup(id: string) {
     const response = await apiFetch(`/groups/${id}/events`, {
         method: 'GET',
@@ -52,6 +60,38 @@ export async function fetchGroups() {
 export async function fetchGroupsUser(id: string) {
     const response = await apiFetchClient(`/groups/user/${id}`, {
         method: 'GET',
+    });
+    if (!response.ok) return null;
+    return response.json();
+}
+
+
+type CreateData = {
+    name: string;
+    description: string;
+    tags: string[];
+    location: string;
+    avatar_url: string;
+}
+
+export async function createGroup(data: CreateData) {
+    const response = await apiFetchClient(`/groups/`, {
+        method: 'POST',
+        body: {
+            body: JSON.stringify(data)
+        }
+    });
+    if (!response.ok) return null;
+    return response.json();
+}
+
+export async function updateGroup(id: string, data: object) {
+    console.log(data)
+    const response = await apiFetchClient(`/groups/${id}`, {
+        method: 'PUT',
+        body: {
+            body: JSON.stringify(data)
+        }
     });
     if (!response.ok) return null;
     return response.json();

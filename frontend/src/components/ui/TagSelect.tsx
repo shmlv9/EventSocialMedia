@@ -49,7 +49,7 @@ export default function TagSelect({value, onChange}: Props) {
         <div className="relative w-full" ref={ref}>
             {/* Поле выбора тегов */}
             <div
-                className="w-full border-2 border-black rounded-xl px-4 py-3 cursor-pointer bg-white hover:bg-gray-50 transition-colors"
+                className="w-full border-2 border-black rounded-xl px-4 py-3 cursor-pointer bg-gray-50 hover:bg-gray-100 transition-colors"
                 onClick={() => setIsOpen(!isOpen)}
             >
                 {value.length === 0 ? (

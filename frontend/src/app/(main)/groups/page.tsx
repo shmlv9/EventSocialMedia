@@ -1,11 +1,12 @@
 'use client'
 
-import { useEffect, useState } from 'react'
-import { FiUsers, FiCalendar, FiMapPin } from 'react-icons/fi'
-import { fetchGroups } from "@/lib/api/groups/apiGroup"
+import {useEffect, useState} from 'react'
+import {FiUsers, FiMapPin} from 'react-icons/fi'
+import {fetchGroups} from "@/lib/api/groups/apiGroup"
 import toast from 'react-hot-toast'
 import {fetchTags} from "@/lib/api/search/apiSeacrh";
-import { useRouter } from 'next/navigation'
+import {useRouter} from 'next/navigation'
+import Link from 'next/link'
 
 type Group = {
     id: number
@@ -51,7 +52,15 @@ export default function GroupsByTags() {
 
     return (
         <div className="bg-white rounded-3xl shadow-lg border border-gray-200 p-6">
-            <h1 className="text-2xl font-bold text-black mb-6">Группы по интересам</h1>
+            <div className={'flex flex-row justify-between'}>
+                <h1 className="text-2xl font-bold text-black mb-6">Группы по интересам</h1>
+                <Link
+                    href="/groups/create"
+                    className="rounded-3xl p-2 bg-lime-400 text-black hover:bg-lime-300 transition-colors font-medium shadow-md hover:shadow-lg flex items-center gap-2 border border-lime-400 mb-5"
+                >
+                    Создать группу
+                </Link>
+            </div>
 
             {/* Теги для фильтрации */}
             <div className="flex flex-wrap gap-2 mb-6">
@@ -96,14 +105,14 @@ export default function GroupsByTags() {
                                         />
                                     ) : (
                                         <div className="w-full h-full flex items-center justify-center text-gray-400">
-                                            <FiUsers className="text-4xl" />
+                                            <FiUsers className="text-4xl"/>
                                         </div>
                                     )}
                                 </div>
 
                                 {/* Основное содержимое */}
                                 <div className="p-4">
-                                    <h3 className="font-bold text-lg mb-2 text-black" >{group.name}</h3>
+                                    <h3 className="font-bold text-lg mb-2 text-black">{group.name}</h3>
 
                                     {/* Добавленное описание группы */}
                                     {group.description && (
@@ -115,7 +124,7 @@ export default function GroupsByTags() {
                                     <div className="space-y-2 mb-3">
                                         {group.location && (
                                             <div className="flex items-center gap-2 text-gray-600">
-                                                <FiMapPin className="text-lime-500" />
+                                                <FiMapPin className="text-lime-500"/>
                                                 <span>{group.location}</span>
                                             </div>
                                         )}
@@ -137,7 +146,7 @@ export default function GroupsByTags() {
 
                                     {/* Кнопка вступления */}
                                     <button
-                                        className="w-full bg-lime-400 hover:bg-lime-500 text-black font-medium py-2 rounded-lg transition"
+                                        className="w-full bg-lime-400 hover:bg-lime-500 text-black font-medium py-2 rounded-3xl transition cursor-pointer"
                                         onClick={() => router.push(`/groups/${group.id}`)}
                                     >
                                         Узнать подробнее
@@ -149,7 +158,7 @@ export default function GroupsByTags() {
 
                     {filteredGroups.length === 0 && (
                         <div className="text-center py-8 text-gray-500">
-                            <FiUsers className="mx-auto text-4xl mb-2" />
+                            <FiUsers className="mx-auto text-4xl mb-2"/>
                             <p>Группы не найдены</p>
                             {selectedTag && (
                                 <button

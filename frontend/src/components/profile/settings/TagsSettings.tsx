@@ -2,21 +2,14 @@
 
 import React, {useEffect, useState} from 'react';
 import {toast} from 'react-hot-toast';
-import {fetchProfileClient, updateProfile} from "@/lib/api/users/apiUser";
 import {useUser} from "@/context/userContext";
+import {fetchTags} from "@/lib/api/search/apiSeacrh";
+import {fetchProfileClient, updateProfile} from "@/lib/api/users/apiUser";
 
 export default function TagSelector() {
 
-    const availableTags = [
-        "спорт", "музыка", "технологии", "искусство", "путешествия",
-        "кино", "волонтёрство", "наука", "экология", "бизнес",
-        "стартапы", "образование", "фотография", "гейминг", "литература",
-        "театр", "здоровье", "йога", "танцы", "кулинария",
-        "мода", "финансы", "маркетинг", "дизайн", "архитектура"
-    ];
-
     const [selectedTags, setSelectedTags] = useState<string[]>([]);
-
+    const [availableTags, setAvailableTags] = useState([])
     const toggleTagSelection = (tag: string) => {
         setSelectedTags(prev =>
             prev.includes(tag)
@@ -46,15 +39,17 @@ export default function TagSelector() {
     const {userID} = useUser()
 
     useEffect(() => {
-    async function loadProfile() {
-      const profile = await fetchProfileClient(userID);
-      if (profile.tags) {
-          setSelectedTags(profile.tags)
-      }
-    }
+        async function loadProfile() {
+            const tags = await fetchTags()
+            setAvailableTags(tags)
+            const profile = await fetchProfileClient(userID);
+            if (profile.tags) {
+                setSelectedTags(profile.tags)
+            }
+        }
 
-    loadProfile()
-  }, [userID])
+        loadProfile()
+    }, [userID])
     return (
         <div className="p-6 rounded-2xl">
             <h2 className="text-xl font-bold text-black mb-4">Выберите интересующие теги</h2>
