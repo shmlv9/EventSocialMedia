@@ -2,10 +2,12 @@ from datetime import datetime
 from typing import List
 
 from api.events.events import get_event
-from api.utils.functions import get_current_user_id, check_user_exists
+from api.utils.functions import get_current_user_id, check_user_exists, generate_unique_filename
 from api.utils.models import GroupCreate, GroupUpdate
-from api.utils.supabase_client import supabase_client
-from fastapi import APIRouter, Depends, HTTPException
+from api.utils.supabase_client import supabase_client, AVATAR_BUCKET
+from fastapi import APIRouter, Depends, HTTPException, UploadFile, File, status
+from fastapi.responses import JSONResponse
+
 
 groups_router = APIRouter(prefix="/groups", tags=["groups"])
 
@@ -270,3 +272,63 @@ def get_group_events(group_id: int, user_id: int = Depends(get_current_user_id))
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+
+@groups_router.patch("/avatar")
+async def upload_avatar(group_id: int, file: UploadFile = File(...)):
+    """
+    Эндпоинт для загрузки аватара и сохранения ссылки в БД
+
+    Параметры:
+    - user_id: ID пользователя, для которого загружается аватар
+    - file: Файл аватара
+    """
+    try:
+        user_exists = supabase_client.table('groups').select("id").eq("id", group_id).execute()
+        if not user_exists.data:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Group not found"
+            )
+
+        filename = generate_unique_filename(group_id, file.filename)
+
+        contents = await file.read()
+
+        if not file.content_type.startswith('image/'):
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Only image files are allowed"
+            )
+
+        supabase_client.storage.from_(AVATAR_BUCKET).upload(
+            file=contents,
+            path=filename,
+            file_options={"content-type": file.content_type}
+        )
+
+        avatar_url = supabase_client.storage.from_(AVATAR_BUCKET).get_public_url(filename)
+
+        update_response = supabase_client.table('groups').update(
+            {"avatar_url": avatar_url}
+        ).eq("id", group_id).execute()
+
+        if not update_response.data:
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail="Failed to update group avatar"
+            )
+
+        return JSONResponse({
+            "message": "Avatar uploaded and updated successfully",
+            "avatar_url": avatar_url,
+            "user_id": group_id
+        }, status_code=status.HTTP_200_OK)
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Error uploading avatar: {str(e)}"
+        )
