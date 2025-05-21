@@ -33,6 +33,7 @@ class ProfileUpdateRequest(BaseModel):
     birthday: str | None = None
     tags: List | None = None
     avatar_url: str | None = None
+    is_private: bool | None = None
 
 
 class EventCreateRequest(BaseModel):

@@ -38,48 +38,56 @@ def delete_profile(user_id: int = Depends(get_current_user_id)):
 
 @profile_router.get("/{user_id}")
 def get_profile(user_id: int, current_user_id: int = Depends(get_current_user_id)):
-    if user_id != current_user_id:
-        result = supabase_client.table("users").select(
-            "first_name, last_name, city, birthday, avatar_url"
-        ).eq("id", user_id).execute().data
-    else:
-        result = supabase_client.table("users").select(
-            "id, email, phone_number, first_name, last_name, city, birthday, tags, avatar_url"
-        ).eq("id", user_id).execute().data
+    result = supabase_client.table("users").select(
+        "id, email, phone_number, first_name, last_name, city, birthday, tags, avatar_url, is_private"
+    ).eq("id", user_id).execute().data
 
     if not result:
         raise HTTPException(status_code=404, detail="User not found")
 
     user_info = result[0]
+    is_private = user_info.get("is_private", False)
 
     friends_response = supabase_client.table("friends").select("id").or_(
         f"sender_id.eq.{user_id},recipient_id.eq.{user_id}"
     ).eq("status", True).execute().data
     user_info["friends_count"] = len(friends_response)
 
-    if user_id != current_user_id:
-        friendship = supabase_client.table("friends") \
-            .select("recipient_id, sender_id, status").or_(
-            f"and(sender_id.eq.{user_id},recipient_id.eq.{current_user_id}),and(sender_id.eq.{current_user_id},"
-            f"recipient_id.eq.{user_id})"
-        ).execute().data
-
-        if not friendship:
-            user_info["friendship_status"] = "not_in_friends"
-        else:
-            record = friendship[0]
-            if record["status"] is True:
-                user_info["friendship_status"] = "in_friends"
-            elif record["recipient_id"] == current_user_id:
-                user_info["friendship_status"] = "application_received"
-            else:
-                user_info["friendship_status"] = "application_sent"
-
+    if user_id == current_user_id:
+        user_info.pop("hashed_password", None)
         return user_info
 
-    user_info.pop("hashed_password", None)
-    user_info.pop("created_at", None)
+    friendship = supabase_client.table("friends").select("recipient_id, sender_id, status").or_(
+        f"and(sender_id.eq.{user_id},recipient_id.eq.{current_user_id}),"
+        f"and(sender_id.eq.{current_user_id},recipient_id.eq.{user_id})"
+    ).execute().data
 
+    if not friendship:
+        user_info["friendship_status"] = "not_in_friends"
+        is_friend = False
+    else:
+        record = friendship[0]
+        if record["status"] is True:
+            user_info["friendship_status"] = "in_friends"
+            is_friend = True
+        elif record["recipient_id"] == current_user_id:
+            user_info["friendship_status"] = "application_received"
+            is_friend = False
+        else:
+            user_info["friendship_status"] = "application_sent"
+            is_friend = False
+
+    if is_private and not is_friend:
+        return {
+            "id": user_info["id"],
+            "first_name": user_info["first_name"],
+            "last_name": user_info["last_name"],
+            "avatar_url": user_info.get("avatar_url"),
+            "friendship_status": user_info["friendship_status"],
+            "is_private": user_info["is_private"]
+        }
+
+    user_info.pop("hashed_password", None)
     return user_info
 
 
