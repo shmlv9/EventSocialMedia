@@ -183,6 +183,13 @@ def join_group(group_id: int, user_id: int = Depends(get_current_user_id)):
 def leave_group(group_id: int, user_id: int = Depends(get_current_user_id)):
     check_group_exists(group_id)
 
+    admin = supabase_client.table('group_members').select('is_admin').eq('user_id', user_id) \
+        .eq('group_id', group_id).execute()
+
+    if admin:
+        raise HTTPException(status_code=400, detail="Administrator cannot log out of his group")
+
+
     deleted = supabase_client.table("group_members").delete().match({
         "group_id": group_id,
         "user_id": user_id

@@ -24,7 +24,17 @@ def search_users(
 @search_router.get("/groups/")
 def search_groups(
         query: str = Query(..., min_length=1),
-        _: int = Depends(get_current_user_id)):
-    results = supabase_client.table("groups").select("*") \
-        .ilike("name", f"{query}%").execute().data
-    return results
+        _: int = Depends(get_current_user_id)
+):
+
+    name_results = supabase_client.table("groups").select("*") \
+        .ilike("name", f"%{query}%").execute().data
+
+    other_results = supabase_client.table("groups").select("*") \
+        .not_.in_("id", [g['id'] for g in name_results]) \
+        .or_(f"name.ilike.%{query}%,description.ilike.%{query}%") \
+        .execute().data
+
+    result = name_results + other_results
+
+    return result
