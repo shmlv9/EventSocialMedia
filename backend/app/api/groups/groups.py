@@ -1,5 +1,6 @@
 from datetime import datetime
 from typing import List
+import secrets
 
 from api.events.events import get_event
 from api.utils.functions import get_current_user_id, check_user_exists, generate_unique_filename
@@ -62,6 +63,46 @@ def get_group(group_id: int, user_id: int = Depends(get_current_user_id)):
     creator_info = data.pop("users", {})
     data["creator"] = creator_info
 
+    if data.get("is_private"):
+        if data["creator_id"] == user_id:
+            status = "creator"
+        else:
+            membership_response = (
+                supabase_client.table("group_members")
+                .select("is_admin")
+                .eq("group_id", group_id)
+                .eq("user_id", user_id)
+                .execute()
+            )
+
+            if membership_response.data:
+                if membership_response.data[0]["is_admin"]:
+                    status = "admin"
+                else:
+                    status = "member"
+            else:
+                raise HTTPException(status_code=403, detail="This group is private")
+
+        data["status"] = status
+    else:
+        if data["creator_id"] == user_id:
+            data["status"] = "creator"
+        else:
+            membership_response = (
+                supabase_client.table("group_members")
+                .select("is_admin")
+                .eq("group_id", group_id)
+                .eq("user_id", user_id)
+                .execute()
+            )
+            if membership_response.data:
+                if membership_response.data[0]["is_admin"]:
+                    data["status"] = "admin"
+                else:
+                    data["status"] = "member"
+            else:
+                data["status"] = None
+
     members_response = (
         supabase_client.table("group_members")
         .select("id", count="exact")
@@ -78,24 +119,6 @@ def get_group(group_id: int, user_id: int = Depends(get_current_user_id)):
         .execute()
     )
     data["events_count"] = events_response.count or 0
-
-    if data["creator_id"] == user_id:
-        data["status"] = "creator"
-    else:
-        membership_response = (
-            supabase_client.table("group_members")
-            .select("is_admin")
-            .eq("group_id", group_id)
-            .eq("user_id", user_id)
-            .execute()
-        )
-        if membership_response.data:
-            if membership_response.data[0]["is_admin"]:
-                data["status"] = "admin"
-            else:
-                data["status"] = "member"
-        else:
-            data["status"] = None
 
     admins_response = (
         supabase_client.table("group_members")
@@ -154,7 +177,7 @@ def delete_group(group_id: int, user_id: int = Depends(get_current_user_id)):
 @groups_router.get("/", response_model=List[dict])
 def get_all_groups(user_id: int = Depends(get_current_user_id)):
     check_user_exists(user_id)
-    response = supabase_client.table("groups").select("*").execute().data
+    response = supabase_client.table("groups").select("*").eq("is_private", False).execute().data
     return response
 
 
@@ -162,6 +185,20 @@ def get_all_groups(user_id: int = Depends(get_current_user_id)):
 def join_group(group_id: int, user_id: int = Depends(get_current_user_id)):
     check_group_exists(group_id)
     check_user_exists(user_id)
+
+    group_response = (
+        supabase_client.table("groups")
+        .select("is_private")
+        .eq("id", group_id)
+        .single()
+        .execute()
+    )
+
+    if not group_response.data:
+        raise HTTPException(status_code=404, detail="Group not found")
+
+    if group_response.data["is_private"]:
+        raise HTTPException(status_code=403, detail="Cannot join a private group")
 
     existing = supabase_client.table("group_members").select("id").match({
         "group_id": group_id,
@@ -189,7 +226,6 @@ def leave_group(group_id: int, user_id: int = Depends(get_current_user_id)):
     if admin:
         raise HTTPException(status_code=400, detail="Administrator cannot log out of his group")
 
-
     deleted = supabase_client.table("group_members").delete().match({
         "group_id": group_id,
         "user_id": user_id
@@ -204,6 +240,25 @@ def leave_group(group_id: int, user_id: int = Depends(get_current_user_id)):
 @groups_router.get("/{group_id}/members", response_model=List[dict])
 def get_group_members(group_id: int, user_id: int = Depends(get_current_user_id)):
     check_group_exists(group_id)
+
+    group = supabase_client.table("groups") \
+        .select("is_private") \
+        .eq("id", group_id) \
+        .single() \
+        .execute().data
+
+    if not group:
+        raise HTTPException(status_code=404, detail="Group not found")
+
+    if group["is_private"]:
+        membership = supabase_client.table("group_members") \
+            .select("id") \
+            .eq("group_id", group_id) \
+            .eq("user_id", user_id) \
+            .execute().data
+
+        if not membership:
+            raise HTTPException(status_code=403, detail="Access denied: private group")
 
     members = (supabase_client.table("group_members")
                .select("user_id, is_admin, users(id, first_name, last_name, avatar_url)")
@@ -255,6 +310,31 @@ def get_user_groups(target_user_id: int, user_id: int = Depends(get_current_user
 @groups_router.get("/{group_id}/events")
 def get_group_events(group_id: int, user_id: int = Depends(get_current_user_id)):
     try:
+        group = (
+            supabase_client.table("groups")
+            .select("is_private")
+            .eq("id", group_id)
+            .single()
+            .execute()
+            .data
+        )
+
+        if not group:
+            raise HTTPException(status_code=404, detail="Group not found")
+
+        if group["is_private"]:
+            membership = (
+                supabase_client.table("group_members")
+                .select("id")
+                .eq("group_id", group_id)
+                .eq("user_id", user_id)
+                .execute()
+                .data
+            )
+
+            if not membership:
+                raise HTTPException(status_code=403, detail="Access denied: private group")
+
         response = (
             supabase_client.table("events")
             .select("id")
@@ -277,6 +357,8 @@ def get_group_events(group_id: int, user_id: int = Depends(get_current_user_id))
                 continue
         return events
 
+    except HTTPException:
+        raise
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
@@ -339,3 +421,65 @@ async def upload_avatar(group_id: int, file: UploadFile = File(...)):
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"Error uploading avatar: {str(e)}"
         )
+
+
+@groups_router.post("/{group_id}/generate_link")
+def generate_invite_link(group_id: int, user_id: int = Depends(get_current_user_id)):
+    member = supabase_client.table("group_members") \
+        .select("is_admin") \
+        .match({"group_id": group_id, "user_id": user_id}) \
+        .single().execute().data
+
+    if not member or not member["is_admin"]:
+        raise HTTPException(status_code=403, detail="Not admin to generate link")
+
+    token = secrets.token_urlsafe(32)
+
+    existing = supabase_client.table("group_invite_links") \
+        .select("id") \
+        .eq("group_id", group_id) \
+        .maybe_single().execute().data
+
+    if existing:
+        supabase_client.table("group_invite_links") \
+            .update({"token": token}) \
+            .eq("id", existing["id"]).execute()
+    else:
+        supabase_client.table("group_invite_links") \
+            .insert({"group_id": group_id, "token": token}).execute()
+
+    return {"invite_token": token}
+
+
+@groups_router.post("/join_by_token/{token}")
+def join_group_by_token(token: str, user_id: int = Depends(get_current_user_id)):
+    link_response = supabase_client.table("group_invite_links") \
+        .select("*") \
+        .eq("token", token) \
+        .single() \
+        .execute()
+
+    if not link_response.data:
+        raise HTTPException(status_code=404, detail="Invalid or expired token")
+
+    link = link_response.data
+    group_id = link["group_id"]
+
+    existing = supabase_client.table("group_members") \
+        .select("id") \
+        .match({
+            "group_id": group_id,
+            "user_id": user_id
+        }) \
+        .execute().data
+
+    if existing:
+        raise HTTPException(status_code=400, detail="Already a member of this group")
+
+    supabase_client.table("group_members").insert({
+        "group_id": group_id,
+        "user_id": user_id,
+        "is_admin": False
+    }).execute()
+
+    return {"msg": "Successfully joined the group"}
