@@ -31,12 +31,6 @@ def search_groups(
         .ilike("name", f"%{query}%") \
         .execute().data
 
-    name_ids = [g['id'] for g in name_results] or [0]
-    other_results = supabase_client.table("groups").select("*") \
-        .eq("is_private", False) \
-        .not_.in_("id", name_ids) \
-        .or_(f"name.ilike.%{query}%,description.ilike.%{query}%") \
-        .execute().data
-
-    result = name_results + other_results
+    result = name_results
     return result
+

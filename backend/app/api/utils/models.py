@@ -59,3 +59,4 @@ class GroupUpdate(BaseModel):
     description: Optional[str] = None
     avatar_url: Optional[str] = None
     tags: Optional[List[str]] = None
+    is_private: Optional[bool] = None

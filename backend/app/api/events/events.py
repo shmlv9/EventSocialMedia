@@ -170,11 +170,8 @@ def get_event(event_id: int, user_id: int = Depends(get_current_user_id)):
                 "name": f"{user['first_name']} {user['last_name']}",
                 "avatar_url": user.get("avatar_url")
             }
-
-        return {
-            "event": event,
-            "organizer": organizer
-        }
+        event["organizer"] = organizer
+        return {"event": event}
 
     except HTTPException:
         raise

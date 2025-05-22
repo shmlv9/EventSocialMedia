@@ -302,8 +302,67 @@ def toggle_admin(group_id: int, target_user_id: int, user_id: int = Depends(get_
 def get_user_groups(target_user_id: int, user_id: int = Depends(get_current_user_id)):
     check_user_exists(target_user_id)
 
-    groups = supabase_client.table("group_members").select("group_id, groups(*)") \
-        .eq("user_id", target_user_id).execute().data
+    if target_user_id == user_id:
+        groups = (
+            supabase_client.table("group_members")
+            .select("group_id, groups(*)")
+            .eq("user_id", user_id)
+            .execute()
+            .data
+        )
+        return [g["groups"] for g in groups if g.get("groups")]
+
+    user_data = (
+        supabase_client.table("users")
+        .select("is_private")
+        .eq("id", target_user_id)
+        .single()
+        .execute()
+        .data
+    )
+
+    if not user_data:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    is_private = user_data.get("is_private", False)
+
+    friendship = supabase_client.table("friends") \
+        .select("id").or_(
+            f"and(sender_id.eq.{user_id},recipient_id.eq.{target_user_id}),"
+            f"and(sender_id.eq.{target_user_id},recipient_id.eq.{user_id})"
+        ).eq("status", True).execute().data
+
+    is_friend = bool(friendship)
+
+    if is_private and not is_friend:
+        raise HTTPException(status_code=403, detail="Access denied: private profile")
+
+    groups = (
+        supabase_client.table("group_members")
+        .select("group_id, groups(*)")
+        .eq("user_id", target_user_id)
+        .execute()
+        .data
+    )
+
+    return [
+        g["groups"]
+        for g in groups
+        if g.get("groups") and not g["groups"].get("is_private", False)
+    ]
+
+
+@groups_router.get("/me/admin", response_model=List[dict])
+def get_my_admin_groups(user_id: int = Depends(get_current_user_id)):
+    groups = (
+        supabase_client.table("group_members")
+        .select("group_id, groups(*)")
+        .eq("user_id", user_id)
+        .eq("is_admin", True)
+        .execute()
+        .data
+    )
+
     return [g["groups"] for g in groups if g.get("groups")]
 
 
