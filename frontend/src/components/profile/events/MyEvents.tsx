@@ -7,7 +7,8 @@ export default async function MyEvents({id}: { id: string }) {
 
     const eventsCreated = await fetchEventUserCreated(id)
     const eventsParticipants = await fetchEventUserParticipants(id)
-
+    console.log(eventsCreated)
+    console.log(eventsParticipants)
     return (
         <div>
             <EventsMenu

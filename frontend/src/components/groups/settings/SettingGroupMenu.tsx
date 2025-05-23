@@ -8,6 +8,7 @@ import GroupTags from "@/components/groups/settings/tabs/SettingsGroupTags";
 import {fetchGroupClient} from "@/lib/api/groups/apiGroup";
 import toast from "react-hot-toast";
 import {fetchTags} from "@/lib/api/search/apiSeacrh";
+import PrivateGroupSettings from "@/components/groups/settings/tabs/PrivateGroupSettings";
 
 type User = {
     id: number;
@@ -30,7 +31,7 @@ type Group = {
     events_count: number;
     status: 'creator' | 'admin' | 'member' | null;
     admins: User[];
-    is_private?: boolean;
+    is_private: boolean;
 };
 
 type NavItem = {
@@ -96,7 +97,6 @@ export default function SettingsGroupMenu({id}: { id: string }) {
     }
 
 
-
     return (
         <div className="flex flex-col md:flex-row gap-6 w-full text-black">
             <div className="w-full md:w-64 rounded-3xl shadow-sm p-4 bg-white">
@@ -114,14 +114,15 @@ export default function SettingsGroupMenu({id}: { id: string }) {
                 {activeTab === 'tags' && (
                     <GroupTags
                         id={id}
-                        initialGroupData={groupData}
+                        initialGroupData={groupData.tags}
                         availableTags={availableTags}
                     />
                 )}
                 {activeTab === 'private' && (
-                    <div className="p-6">
-                        <h2 className="text-xl font-bold mb-4">Настройки приватности</h2>
-                    </div>
+                    <PrivateGroupSettings
+                        isPrivate={groupData.is_private}
+                        id={id}
+                    />
                 )}
             </div>
         </div>

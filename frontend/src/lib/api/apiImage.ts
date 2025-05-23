@@ -49,29 +49,28 @@ export async function avatarUpload(file: File) {
 }
 
 
-export async function uploadGroupAvatar(file: File | null) {
-    return ''
-    // if (file) {
-    //     const token = getToken()
-    //     const apiUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
-    //     const formData = new FormData()
-    //     formData.append('file', file)
-    //
-    //     const response = await fetch(`${apiUrl}/groups/avatar`, {
-    //         method: 'PATCH',
-    //         headers: {
-    //             Authorization: `Bearer ${token}`
-    //         },
-    //         body: formData
-    //     })
-    //
-    //     if (!response.ok) {
-    //         throw new Error('Ошибка при загрузке изображения')
-    //     }
-    //
-    //     const data = await response.json()
-    //     return data
-    // } else {
-    //     return ''
-    // }
+export async function uploadGroupAvatar(file: File | null, id: string) {
+    if (file) {
+        const token = getToken()
+        const apiUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
+        const formData = new FormData()
+        formData.append('file', file)
+
+        const response = await fetch(`${apiUrl}/groups/avatar?group_id=${id}`, {
+            method: 'PATCH',
+            headers: {
+                Authorization: `Bearer ${token}`
+            },
+            body: formData
+        })
+
+        if (!response.ok) {
+            throw new Error('Ошибка при загрузке изображения')
+        }
+
+        const data = await response.json()
+        return data
+    } else {
+        return ''
+    }
 }

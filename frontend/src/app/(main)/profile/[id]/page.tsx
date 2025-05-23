@@ -1,5 +1,5 @@
 import {CiLocationOn, CiCalendar} from "react-icons/ci";
-import {FiChevronRight} from "react-icons/fi";
+import {FiChevronRight, FiLock} from "react-icons/fi";
 import {fetchID, fetchProfile} from "@/lib/api/users/apiUser";
 import Link from "next/link";
 import {cookies} from "next/headers";
@@ -25,7 +25,6 @@ export default async function ProfilePage({params}: { params: { id: string } }) 
         return <div className="text-black">Пользователь не найден</div>;
     }
 
-    console.log(userData)
     return (
         <div className="min-h-screen bg-white">
             {/* Шапка профиля */}
@@ -57,57 +56,73 @@ export default async function ProfilePage({params}: { params: { id: string } }) 
                     </div>
                 </div>
 
-                {/* Местоположение и дата рождения */}
-                <div className="flex flex-wrap gap-4 my-4">
-                    <div className="flex items-center">
-                        <CiLocationOn className="text-xl text-lime-500 mr-2"/>
-                        <span>{userData.city || 'Не указано'}</span>
+                {userData.is_private ? (
+                    <div className="mt-8 mb-12 p-6 bg-gray-50 rounded-2xl border border-gray-200 flex flex-col items-center text-center">
+                        <div className="w-16 h-16 bg-pink-100 rounded-full flex items-center justify-center mb-4">
+                            <FiLock className="text-pink-500 text-2xl"/>
+                        </div>
+                        <h3 className="text-xl font-bold mb-2">Это частный профиль</h3>
+                        <p className="text-gray-600 max-w-md">
+                            {String(userID) === String(id)
+                                ? 'Вы настроили приватность своего профиля. Только вы можете видеть свою информацию.'
+                                : 'Этот пользователь ограничил доступ к своему профилю.'}
+                        </p>
                     </div>
-                    <div className="flex items-center">
-                        <CiCalendar className="text-xl text-lime-500 mr-2"/>
-                        <span>{userData.birthday || 'Не указана'}</span>
-                    </div>
-                </div>
+                ) : (
+                    <>
+                        <div className="flex flex-wrap gap-4 my-4">
+                            <div className="flex items-center">
+                                <CiLocationOn className="text-xl text-lime-500 mr-2"/>
+                                <span>{userData.city || 'Не указано'}</span>
+                            </div>
+                            <div className="flex items-center">
+                                <CiCalendar className="text-xl text-lime-500 mr-2"/>
+                                <span>{userData.birthday || 'Не указана'}</span>
+                            </div>
+                        </div>
 
-                {/* Статистика */}
-                <div className="flex space-x-6 mb-6">
-                    <Link
-                        href={`/profile/${id}/friends`}
-                        className="flex items-center space-x-1 text-black hover:text-lime-500 transition-colors group"
-                    >
-                        <span className="font-semibold group-hover:underline">{userData.friends_count || 0}</span>
-                        <span>друзей</span>
-                        <FiChevronRight className="h-4 w-4"/>
-                    </Link>
+                        {/* Статистика */}
+                        <div className="flex space-x-6 mb-6">
+                            <Link
+                                href={`/profile/${id}/friends`}
+                                className="flex items-center space-x-1 text-black hover:text-lime-500 transition-colors group"
+                            >
+                                <span className="font-semibold group-hover:underline">{userData.friends_count || 0}</span>
+                                <span>друзей</span>
+                                <FiChevronRight className="h-4 w-4"/>
+                            </Link>
 
-                    <Link
-                        href={`/profile/${id}/groups`}
-                        className="flex items-center space-x-1 text-black hover:text-lime-500 transition-colors group"
-                    >
-                        <span className="font-semibold group-hover:underline">{userData.groups_count || 0}</span>
-                        <span>групп</span>
-                        <FiChevronRight className="h-4 w-4"/>
-                    </Link>
-                </div>
+                            <Link
+                                href={`/profile/${id}/groups`}
+                                className="flex items-center space-x-1 text-black hover:text-lime-500 transition-colors group"
+                            >
+                                <span className="font-semibold group-hover:underline">{userData.groups_count || 0}</span>
+                                <span>групп</span>
+                                <FiChevronRight className="h-4 w-4"/>
+                            </Link>
+                        </div>
 
-                {/* О себе */}
-                <div className="mb-8">
-                    <h2 className="text-lg font-semibold mb-2">О себе</h2>
-                    <p className={`text-gray-700 ${!userData.bio && 'italic text-gray-500'}`}>
-                        {userData.bio || 'Пользователь пока ничего не рассказал о себе'}
-                    </p>
-                </div>
+                        <div className="mb-8">
+                            <h2 className="text-lg font-semibold mb-2">О себе</h2>
+                            <p className={`text-gray-700 ${!userData.bio && 'italic text-gray-500'}`}>
+                                {userData.bio || 'Пользователь пока ничего не рассказал о себе'}
+                            </p>
+                        </div>
+                    </>
+                )}
             </div>
 
             {/* Мероприятия */}
-            <div className="rounded-3xl">
-                <h1 className="text-2xl font-bold text-black mb-6 text-center pt-6">
-                    {String(userID) === String(id) ? 'Мои мероприятия' : 'Мероприятия'}
-                </h1>
-                <div className="space-y-4 w-full mb-5">
-                    <MyEvents id={id}/>
+            {!userData.is_private && (
+                <div className="rounded-3xl">
+                    <h1 className="text-2xl font-bold text-black mb-6 text-center pt-6">
+                        {String(userID) === String(id) ? 'Мои мероприятия' : 'Мероприятия'}
+                    </h1>
+                    <div className="space-y-4 w-full mb-5">
+                        <MyEvents id={id}/>
+                    </div>
                 </div>
-            </div>
+            )}
         </div>
     );
 }

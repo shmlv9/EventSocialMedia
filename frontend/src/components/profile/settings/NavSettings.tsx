@@ -22,7 +22,7 @@ export default function NavSettings({
                 <button
                     key={index}
                     onClick={() => setActiveTab(value.tab)}
-                    className={`w-full flex items-center gap-3 px-4 py-3 rounded-3xl text-left transition-colors ${
+                    className={`w-full flex items-center gap-3 px-4 py-3 rounded-3xl text-left transition-colors cursor-pointer ${
                         activeTab === value.tab
                             ? ' text-black bg-pink-500 font-medium'
                             : 'text-gray-400 hover:text-black'

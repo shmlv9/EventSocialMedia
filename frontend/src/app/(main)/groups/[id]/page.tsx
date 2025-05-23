@@ -44,9 +44,25 @@ export default async function GroupPage({params}: { params: { id: string } }) {
                         className="w-full h-full object-cover rounded-t-3xl"
                     />
                 ) : (
-                    <div
-                        className="w-full h-full bg-gray-800 rounded-t-3xl flex items-center justify-center text-gray-500">
-                        <MdOutlinePhotoLibrary className="text-5xl"/>
+                    <div className="relative h-48 bg-white rounded-t-3xl overflow-hidden">
+     <div className="relative h-48 rounded-t-3xl overflow-hidden bg-[conic-gradient(at_top_left,#f0f0f0,transparent),linear-gradient(to_bottom,#60f56040,#3b7dff40)] bg-blend-overlay">
+  <div className="absolute inset-0 bg-[linear-gradient(90deg,#f0f0f0_1px,transparent_1px),linear-gradient(0deg,#f0f0f0_1px,transparent_1px)] bg-[size:40px_40px] opacity-20"></div>
+  <div className="absolute bottom-0 left-6 transform translate-y-1/2">
+    <div className="relative">
+      {groupData.avatar_url ? (
+        <img
+          src={groupData.avatar_url}
+          alt="Аватар группы"
+          className="w-24 h-24 md:w-32 md:h-32 rounded-full border-4 border-white bg-white object-cover shadow-lg"
+        />
+      ) : (
+        <div className="w-24 h-24 md:w-32 md:h-32 rounded-full border-4 border-white bg-lime-500 flex items-center justify-center text-white text-4xl font-bold shadow-lg">
+          {groupData.name[0]}
+        </div>
+      )}
+    </div>
+  </div>
+</div>
                     </div>
                 )}
 
@@ -108,7 +124,7 @@ export default async function GroupPage({params}: { params: { id: string } }) {
                         </div>}
                     {(groupData.status === 'admin' || groupData.status === 'creator') &&
                         <div className="flex gap-2 flex-wrap">
-                                <SettingsGroupButton
+                            <SettingsGroupButton
                                 groupId={id}
                             />
                         </div>}

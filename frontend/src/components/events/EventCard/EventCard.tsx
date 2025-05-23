@@ -38,6 +38,7 @@ type Event = {
 export default function EventCard(event: Event) {
     const {userID} = useUser();
     const [showFriends, setShowFriends] = useState(false);
+    console.log(event)
 
     const startDate = new Date(event.start_timestamptz).toLocaleString('ru-RU', {
         year: 'numeric',

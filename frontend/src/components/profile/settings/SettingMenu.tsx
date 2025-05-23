@@ -7,17 +7,25 @@ import TagsSettings from "@/components/profile/settings/TagsSettings";
 import {FiTag, FiUser} from "react-icons/fi";
 
 export default function SettingsMenu() {
-    const [activeTab, setActiveTab] = useState<string>('profile');
+    const [activeTab, setActiveTab] = useState('profile');
+
 
     return (
-        <div className="flex flex-col md:flex-row gap-6 w-full text-black">
+        <div className="flex flex-col md:flex-row gap-6 w-full text-black ">
+            {/* Навигация */}
             <div className="w-full md:w-64 rounded-3xl shadow-sm p-4 bg-white">
-                <NavSettings activeTab={activeTab} setActiveTab={setActiveTab}
-                             values={[{tab: 'profile', icon: <FiUser/>, label: 'Профиль'},
-                                 {tab: 'tags', icon: <FiTag/>, label: 'Теги'},]}/>
+                <NavSettings
+                    activeTab={activeTab}
+                    setActiveTab={setActiveTab}
+                    values={[
+                        {tab: 'profile', icon: <FiUser/>, label: 'Профиль'},
+                        {tab: 'tags', icon: <FiTag/>, label: 'Теги'},
+                    ]}
+                />
             </div>
 
-            <div className="flex-1 bg-white rounded-3xl shadow-sm  p-6">
+            {/* Контент */}
+            <div className="flex-1 bg-white rounded-3xl shadow-sm p-6">
                 {activeTab === 'profile' && <ProfileSettings/>}
                 {activeTab === 'tags' && <TagsSettings/>}
             </div>

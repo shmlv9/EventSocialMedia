@@ -1,25 +1,18 @@
 'use client'
 
-import React, { useState } from 'react';
-import { toast } from 'react-hot-toast';
-import { updateGroup } from "@/lib/api/groups/apiGroup";
+import React, {useState} from 'react';
+import {toast} from 'react-hot-toast';
+import {updateGroup} from "@/lib/api/groups/apiGroup";
 
-type GroupData = {
-  id: string;
-  name: string;
-  description: string;
-  tags: string[];
-
-};
 
 type GroupTagsProps = {
-  id: string;
-  initialGroupData: GroupData;
-  availableTags: string[];
+    id: string;
+    initialGroupData: string[];
+    availableTags: string[];
 };
 
-export default function GroupTags({ id, initialGroupData, availableTags }: GroupTagsProps) {
-    const [selectedTags, setSelectedTags] = useState<string[]>(initialGroupData.tags || []);
+export default function GroupTags({id, initialGroupData, availableTags}: GroupTagsProps) {
+    const [selectedTags, setSelectedTags] = useState<string[]>(initialGroupData || []);
     const [isSaving, setIsSaving] = useState(false);
 
     const toggleTagSelection = (tag: string) => {
@@ -69,7 +62,7 @@ export default function GroupTags({ id, initialGroupData, availableTags }: Group
                         type="button"
                         onClick={() => toggleTagSelection(tag)}
                         disabled={isSaving}
-                        className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
+                        className={`px-4 py-2 rounded-full text-sm font-medium transition-all cursor-pointer ${
                             selectedTags.includes(tag)
                                 ? 'bg-blue-600 text-black'
                                 : 'bg-gray-200 text-black hover:bg-gray-300'
@@ -90,7 +83,7 @@ export default function GroupTags({ id, initialGroupData, availableTags }: Group
                 <button
                     onClick={handleSave}
                     disabled={selectedTags.length === 0 || isSaving}
-                    className={`px-6 py-2 bg-lime-400 text-black rounded-full hover:bg-lime-300
+                    className={`px-6 py-2 bg-lime-400 text-black rounded-full cursor-pointer hover:bg-lime-300
                               disabled:bg-neutral-700 disabled:text-gray-400 disabled:cursor-not-allowed
                               transition-colors font-medium ${isSaving ? 'animate-pulse' : ''}`}
                 >

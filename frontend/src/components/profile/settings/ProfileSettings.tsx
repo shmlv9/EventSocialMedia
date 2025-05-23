@@ -18,6 +18,7 @@ type UserProfile = {
     bio: string
     avatar_url: string | File
     birthday: string
+    is_private: boolean
 }
 
 export default function ProfileSettings() {
@@ -32,6 +33,7 @@ export default function ProfileSettings() {
         bio: '',
         avatar_url: '',
         birthday: '',
+        is_private: false
     })
 
     const [image, setImage] = useState<File | null>(null)
@@ -53,6 +55,7 @@ export default function ProfileSettings() {
 
         loadProfile()
     }, [userID])
+
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         const {name, value} = e.target
@@ -154,6 +157,19 @@ export default function ProfileSettings() {
                         onChange={handleChange}
                         className="w-full px-4 py-2 bg-neutral-200 text-black rounded-2xl focus:ring-2 focus:ring-lime-400"
                     />
+                </div>
+                <div className="flex items-center">
+                    <input
+                        type="checkbox"
+                        id="is_private"
+                        name="is_private"
+                        checked={formData.is_private}
+                        onChange={(e) => setFormData(prev => ({...prev, is_private: e.target.checked}))}
+                        className="h-4 w-4 text-lime-500 focus:ring-lime-400 border-gray-300 rounded-3xl"
+                    />
+                    <label htmlFor="is_private" className="ml-2 block text-sm text-gray-300">
+                        Закрытый профиль
+                    </label>
                 </div>
 
                 {/* Кнопка сохранения */}

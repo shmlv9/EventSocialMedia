@@ -1,11 +1,12 @@
 'use client'
 
 import React, {useState} from 'react';
-import {FiUsers, FiSave, FiUser} from 'react-icons/fi';
+import {FiUsers, FiSave, FiUser, FiTrash2} from 'react-icons/fi';
 import ImageUploader from "@/components/ui/ImageUploader";
 import toast from 'react-hot-toast';
-import {updateGroup} from "@/lib/api/groups/apiGroup";
 import {uploadGroupAvatar} from "@/lib/api/apiImage";
+import {deleteGroup, updateGroup} from "@/lib/api/groups/apiGroup";
+import { useRouter } from 'next/navigation';
 
 type User = {
     id: number;
@@ -28,7 +29,7 @@ type Group = {
     events_count: number;
     status: 'creator' | 'admin' | 'member' | null;
     admins: User[];
-    is_private?: boolean;
+
 };
 
 type GroupFormData = {
@@ -36,7 +37,6 @@ type GroupFormData = {
     description: string;
     avatar_url: string | null;
     location: string;
-    is_private: boolean;
     tags: string[];
 };
 
@@ -46,10 +46,10 @@ export default function GroupSettings({data, id}: { data: Group; id: string }) {
         description: data.description,
         avatar_url: data.avatar_url,
         location: data.location,
-        is_private: data.is_private || false,
         tags: data.tags
     });
 
+    const router = useRouter()
     const [originalData] = useState(data);
     const [image, setImage] = useState<File | null>(null);
 
@@ -57,17 +57,12 @@ export default function GroupSettings({data, id}: { data: Group; id: string }) {
         const {name, value} = e.target;
         setFormData(prev => ({...prev, [name]: value}));
     };
-
-    const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setFormData(prev => ({...prev, is_private: e.target.checked}));
-    };
-
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         try {
             const res = await updateGroup(id, formData);
             if (image) {
-                await uploadGroupAvatar(image);
+                await uploadGroupAvatar(image, id);
             }
 
             if (res) {
@@ -83,13 +78,24 @@ export default function GroupSettings({data, id}: { data: Group; id: string }) {
         }
     };
 
+    const handleDeleteGroup = async () => {
+        try {
+            const response = await deleteGroup(id)
+            if (response) {
+                toast.success('Группа успешно удалена')
+                router.push('/groups')
+            }
+        } catch (e) {
+            toast.error('Произошла ошибка')
+        }
+    };
+
     const hasChanges =
         JSON.stringify(formData) !== JSON.stringify({
             name: originalData.name,
             description: originalData.description,
             avatar_url: originalData.avatar_url,
             location: originalData.location,
-            is_private: originalData.is_private || false,
             tags: originalData.tags
         }) ||
         image !== null;
@@ -166,21 +172,16 @@ export default function GroupSettings({data, id}: { data: Group; id: string }) {
                     />
                 </div>
 
-                <div className="flex items-center">
-                    <input
-                        type="checkbox"
-                        id="is_private"
-                        name="is_private"
-                        checked={formData.is_private}
-                        onChange={handleCheckboxChange}
-                        className="h-4 w-4 text-lime-500 focus:ring-lime-400 border-gray-300 rounded-3xl"
-                    />
-                    <label htmlFor="is_private" className="ml-2 block text-sm text-gray-300">
-                        Закрытая группа (только по заявкам)
-                    </label>
-                </div>
+                <div className="flex justify-between">
+                    <button
+                        type="button"
+                        onClick={handleDeleteGroup}
+                        className="flex items-center gap-2 px-6 py-3 rounded-2xl font-medium text-red-500 hover:bg-red-50 transition-colors"
+                    >
+                        <FiTrash2/>
+                        Удалить группу
+                    </button>
 
-                <div className="flex justify-end">
                     <button
                         disabled={!hasChanges}
                         type="submit"

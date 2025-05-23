@@ -85,8 +85,15 @@ export async function createGroup(data: CreateData) {
     return response.json();
 }
 
+export async function toggleAdminId(groupId: string, id: string) {
+    const response = await apiFetchClient(`/groups/${groupId}/members/${id}/toggle_admin`, {
+        method: 'POST',
+    });
+    if (!response.ok) return null;
+    return response.ok;
+}
+
 export async function updateGroup(id: string, data: object) {
-    console.log(data)
     const response = await apiFetchClient(`/groups/${id}`, {
         method: 'PUT',
         body: {
@@ -95,4 +102,12 @@ export async function updateGroup(id: string, data: object) {
     });
     if (!response.ok) return null;
     return response.json();
+}
+
+export async function deleteGroup(id: string) {
+    const response = await apiFetchClient(`/groups/${id}`, {
+        method: 'DELETE',
+    });
+    if (!response.ok) return null;
+    return response.ok;
 }

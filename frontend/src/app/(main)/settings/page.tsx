@@ -12,7 +12,7 @@ export default function SettingsPage() {
                     <ProfileUserButton/>
                 </div>
 
-                <div className="rounded-3xl min-h-96">
+                <div className="rounded-3xl min-h-[900px]">
                     <SettingsMenu/>
                 </div>
             </div>
